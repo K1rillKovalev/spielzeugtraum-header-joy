@@ -54,7 +54,7 @@ const Header = () => {
             SpielzeugTraum
           </h1>
           <p className="font-body text-foreground/70 text-sm sm:text-base mt-1">
-            Dein Traumland für Spielzeug ✨
+            Your Dreamland for Toys ✨
           </p>
         </motion.div>
 
@@ -69,7 +69,7 @@ const Header = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
             <input
               type="text"
-              placeholder="Suche nach Spielzeug..."
+              placeholder="Search for toys..."
               className="w-full h-12 sm:h-14 pl-12 pr-4 rounded-full bg-card text-card-foreground shadow-lg border-2 border-transparent focus:border-cta focus:outline-none transition-all duration-300 font-body text-base placeholder:text-muted-foreground"
             />
           </div>
@@ -83,7 +83,7 @@ const Header = () => {
           transition={{ delay: 0.4, duration: 0.4 }}
         >
           <Button variant="cta" size="lg" className="font-display text-lg">
-            🎁 Jetzt shoppen
+            🎁 Shop Now
           </Button>
         </motion.div>
 

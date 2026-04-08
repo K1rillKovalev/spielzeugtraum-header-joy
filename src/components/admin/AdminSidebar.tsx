@@ -23,10 +23,10 @@ import {
 
 const navItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
-  { title: "Benutzerverwaltung", url: "/admin/users", icon: Users },
-  { title: "Datenmanagement", url: "/admin/data", icon: Database },
-  { title: "Statistiken", url: "/admin/stats", icon: BarChart3 },
-  { title: "Systemeinstellungen", url: "/admin/settings", icon: Settings },
+  { title: "User Management", url: "/admin/users", icon: Users },
+  { title: "Data Management", url: "/admin/data", icon: Database },
+  { title: "Statistics", url: "/admin/stats", icon: BarChart3 },
+  { title: "System Settings", url: "/admin/settings", icon: Settings },
 ];
 
 export function AdminSidebar() {
@@ -47,7 +47,7 @@ export function AdminSidebar() {
         </div>
         {!collapsed && (
           <span className="text-xs text-sidebar-foreground/60 mt-1">
-            Admin-Panel
+            Admin Panel
           </span>
         )}
       </SidebarHeader>

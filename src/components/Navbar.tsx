@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   { label: "Home", href: "#home" },
-  { label: "Bestseller", href: "#bestseller" },
-  { label: "Nach Alter", href: "#nach-alter" },
-  { label: "Holzspielzeug", href: "#holzspielzeug" },
-  { label: "Angebote", href: "#angebote" },
+  { label: "Bestsellers", href: "#bestseller" },
+  { label: "By Age", href: "#nach-alter" },
+  { label: "Wooden Toys", href: "#holzspielzeug" },
+  { label: "Deals", href: "#angebote" },
 ];
 
 const Navbar = () => {
@@ -39,9 +39,9 @@ const Navbar = () => {
       {/* Shipping banner */}
       <div className="bg-foreground/90 text-primary-foreground text-xs sm:text-sm text-center py-1.5 font-body flex items-center justify-center gap-2">
         <Truck size={14} />
-        <span>Kostenloser Versand ab 50€</span>
+        <span>Free shipping on orders over €50</span>
         <span className="mx-2 opacity-40">|</span>
-        <span className="hidden sm:inline">🎉 Neue Spielzeuge jede Woche!</span>
+        <span className="hidden sm:inline">🎉 New toys every week!</span>
       </div>
 
       <div className="container mx-auto px-4">
@@ -50,7 +50,7 @@ const Navbar = () => {
           <button
             className="md:hidden text-foreground"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Menü"
+            aria-label="Menu"
           >
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -77,17 +77,17 @@ const Navbar = () => {
           <div className="flex items-center gap-2">
             <button
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold font-body text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20 transition-all duration-200"
-              aria-label="Mein Konto"
+              aria-label="My Account"
             >
               <User size={18} />
-              <span className="hidden sm:inline">Mein Konto</span>
+              <span className="hidden sm:inline">My Account</span>
             </button>
             <button
               className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold font-body text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20 transition-all duration-200"
-              aria-label="Warenkorb"
+              aria-label="Cart"
             >
               <ShoppingCart size={18} />
-              <span className="hidden sm:inline">Warenkorb</span>
+              <span className="hidden sm:inline">Cart</span>
               <span className="absolute -top-0.5 left-5 sm:left-auto sm:-top-0.5 sm:-right-1 w-4 h-4 bg-cta text-cta-foreground text-[10px] rounded-full flex items-center justify-center font-bold">
                 0
               </span>

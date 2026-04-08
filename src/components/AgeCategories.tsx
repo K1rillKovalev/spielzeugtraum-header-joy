@@ -4,20 +4,20 @@ import { Button } from "@/components/ui/button";
 
 const categories = [
   {
-    label: "0–3 Jahre",
-    description: "Greiflinge, Rasseln & Kuscheltiere",
+    label: "0–3 Years",
+    description: "Rattles, Teethers & Plush Toys",
     Icon: Baby,
     color: "from-pink-300 to-rose-400",
   },
   {
-    label: "4–7 Jahre",
-    description: "Puzzles, Bausteine & Kreativsets",
+    label: "4–7 Years",
+    description: "Puzzles, Building Blocks & Craft Kits",
     Icon: Puzzle,
     color: "from-amber-300 to-orange-400",
   },
   {
-    label: "8+ Jahre",
-    description: "Brettspiele, Technik & Modellbau",
+    label: "8+ Years",
+    description: "Board Games, Tech & Model Building",
     Icon: Gamepad2,
     color: "from-sky-300 to-blue-400",
   },
@@ -33,10 +33,10 @@ const AgeCategories = () => {
         viewport={{ once: true }}
       >
         <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-foreground mb-2">
-          🎂 Nach Alter shoppen
+          🎂 Shop by Age
         </h2>
         <p className="font-body text-muted-foreground">
-          Finde das perfekte Spielzeug für jede Altersgruppe
+          Find the perfect toy for every age group
         </p>
       </motion.div>
 
@@ -59,7 +59,7 @@ const AgeCategories = () => {
             </h3>
             <p className="font-body text-foreground/80 text-sm mb-4">{description}</p>
             <Button variant="outline" size="sm" className="bg-card/60 border-card/80 text-foreground hover:bg-card/90">
-              Entdecken →
+              Explore →
             </Button>
           </motion.div>
         ))}

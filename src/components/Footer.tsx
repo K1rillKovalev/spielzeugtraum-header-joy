@@ -7,15 +7,15 @@ import { useToast } from "@/hooks/use-toast";
 const linkColumns = [
   {
     title: "Links",
-    links: ["Über uns", "Kontakt", "Versand & Rückgabe", "Datenschutz"],
+    links: ["About Us", "Contact", "Shipping & Returns", "Privacy Policy"],
   },
   {
-    title: "Kategorien",
-    links: ["Puppen", "Autos", "Lernspielzeug", "Holzspielzeug", "Brettspiele"],
+    title: "Categories",
+    links: ["Dolls", "Cars", "Educational Toys", "Wooden Toys", "Board Games"],
   },
   {
     title: "Support",
-    links: ["Hilfe", "FAQ", "Impressum", "AGB"],
+    links: ["Help", "FAQ", "Imprint", "Terms & Conditions"],
   },
 ];
 
@@ -74,10 +74,10 @@ const Footer = () => {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      toast({ title: "Bitte gib eine gültige E-Mail-Adresse ein.", variant: "destructive" });
+      toast({ title: "Please enter a valid email address.", variant: "destructive" });
       return;
     }
-    toast({ title: "🎉 Angemeldet!", description: "Du erhältst bald Neuigkeiten von SpielzeugTraum." });
+    toast({ title: "🎉 Subscribed!", description: "You'll receive news from SpielzeugTraum soon." });
     setEmail("");
   };
 
@@ -94,7 +94,6 @@ const Footer = () => {
 
       <div className="container mx-auto px-4 pt-10 pb-6">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8">
-          {/* Link columns */}
           {linkColumns.map((col) => (
             <MobileColumn key={col.title} title={col.title} links={col.links} />
           ))}
@@ -105,7 +104,7 @@ const Footer = () => {
               Newsletter
             </h4>
             <p className="font-body text-sm text-[hsl(var(--hero-bg)/.7)] mb-3">
-              Erhalte exklusive Angebote und Neuheiten!
+              Get exclusive deals and new arrivals!
             </p>
             <form onSubmit={handleSubmit} className="flex gap-2 mb-5">
               <div className="relative flex-1">
@@ -114,7 +113,7 @@ const Footer = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="E-Mail-Adresse"
+                  placeholder="Email address"
                   className="w-full h-10 pl-9 pr-3 rounded-full bg-[hsl(var(--hero-bg)/.1)] text-[hsl(var(--hero-bg))] border border-[hsl(var(--hero-bg)/.2)] focus:border-cta focus:outline-none font-body text-sm placeholder:text-[hsl(var(--hero-bg)/.4)]"
                   maxLength={255}
                 />
@@ -126,7 +125,7 @@ const Footer = () => {
 
             {/* Social */}
             <div className="flex items-center gap-3">
-              <span className="font-body text-xs text-[hsl(var(--hero-bg)/.5)]">Folge uns:</span>
+              <span className="font-body text-xs text-[hsl(var(--hero-bg)/.5)]">Follow us:</span>
               <a href="#" aria-label="Instagram" className="w-9 h-9 rounded-full bg-[hsl(var(--hero-bg)/.1)] flex items-center justify-center hover:bg-cta transition-colors duration-200">
                 <Instagram size={16} />
               </a>
@@ -137,33 +136,18 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Divider */}
         <div className="h-px bg-[hsl(var(--hero-bg)/.15)] my-6" />
 
-        {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Payment icons */}
           <div className="flex items-center gap-3">
-            <span className="font-body text-xs text-[hsl(var(--hero-bg)/.5)]">Zahlungsarten:</span>
-            {/* PayPal */}
-            <div className="bg-[hsl(var(--hero-bg)/.1)] rounded-md px-2.5 py-1">
-              <span className="font-display text-xs font-bold text-[hsl(var(--hero-bg)/.8)]">PayPal</span>
-            </div>
-            {/* Klarna */}
-            <div className="bg-[hsl(var(--hero-bg)/.1)] rounded-md px-2.5 py-1">
-              <span className="font-display text-xs font-bold text-[hsl(var(--hero-bg)/.8)]">Klarna</span>
-            </div>
-            {/* Visa */}
-            <div className="bg-[hsl(var(--hero-bg)/.1)] rounded-md px-2.5 py-1">
-              <span className="font-display text-xs font-bold text-[hsl(var(--hero-bg)/.8)]">Visa</span>
-            </div>
-            {/* Mastercard */}
-            <div className="bg-[hsl(var(--hero-bg)/.1)] rounded-md px-2.5 py-1">
-              <span className="font-display text-xs font-bold text-[hsl(var(--hero-bg)/.8)]">MC</span>
-            </div>
+            <span className="font-body text-xs text-[hsl(var(--hero-bg)/.5)]">Payment methods:</span>
+            {["PayPal", "Klarna", "Visa", "MC"].map((name) => (
+              <div key={name} className="bg-[hsl(var(--hero-bg)/.1)] rounded-md px-2.5 py-1">
+                <span className="font-display text-xs font-bold text-[hsl(var(--hero-bg)/.8)]">{name}</span>
+              </div>
+            ))}
           </div>
 
-          {/* Copyright */}
           <p className="font-body text-xs text-[hsl(var(--hero-bg)/.5)] text-center">
             © 2026 SpielzeugTraum.de – Made in Germany 🇩🇪
           </p>

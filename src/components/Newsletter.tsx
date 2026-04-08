@@ -12,10 +12,10 @@ const Newsletter = () => {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      toast({ title: "Bitte gib eine gültige E-Mail-Adresse ein.", variant: "destructive" });
+      toast({ title: "Please enter a valid email address.", variant: "destructive" });
       return;
     }
-    toast({ title: "🎉 Willkommen!", description: "Du erhältst bald deine ersten Gutscheine per E-Mail." });
+    toast({ title: "🎉 Welcome!", description: "You'll receive your first coupons by email soon." });
     setEmail("");
   };
 
@@ -33,10 +33,10 @@ const Newsletter = () => {
 
         <Gift size={40} className="text-cta-foreground/80 mx-auto mb-4" />
         <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold text-cta-foreground mb-2">
-          Gutscheine per E-Mail 🎁
+          Coupons by Email 🎁
         </h2>
         <p className="font-body text-cta-foreground/80 mb-6 max-w-md mx-auto">
-          Melde dich an und erhalte exklusive Rabatte und Neuheiten direkt in dein Postfach!
+          Sign up and receive exclusive discounts and new arrivals straight to your inbox!
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto relative z-10">
@@ -46,13 +46,13 @@ const Newsletter = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Deine E-Mail-Adresse"
+              placeholder="Your email address"
               className="w-full h-12 pl-11 pr-4 rounded-full bg-card text-card-foreground shadow-md border-2 border-transparent focus:border-cta-foreground/30 focus:outline-none font-body text-sm placeholder:text-muted-foreground"
               maxLength={255}
             />
           </div>
           <Button type="submit" variant="default" size="lg" className="font-display">
-            Anmelden
+            Subscribe
           </Button>
         </form>
       </motion.div>

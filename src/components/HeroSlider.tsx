@@ -22,7 +22,7 @@ const HeroSlider = () => {
         <motion.img
           key={current}
           src={slides[current]}
-          alt="Bunte Spielzeuge für Kinder"
+          alt="Colorful toys for children"
           className="absolute inset-0 w-full h-full object-cover"
           width={1920}
           height={800}

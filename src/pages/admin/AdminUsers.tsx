@@ -16,16 +16,16 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
 interface UserData {
-  id: number; name: string; email: string; role: "admin" | "kunde";
-  status: "aktiv" | "gesperrt"; permissions: { view: boolean; edit: boolean; delete: boolean };
+  id: number; name: string; email: string; role: "admin" | "customer";
+  status: "active" | "blocked"; permissions: { view: boolean; edit: boolean; delete: boolean };
 }
 
 const initialUsers: UserData[] = [
-  { id: 1, name: "Admin User", email: "admin@spielzeugtraum.de", role: "admin", status: "aktiv", permissions: { view: true, edit: true, delete: true } },
-  { id: 2, name: "Anna Müller", email: "anna@example.com", role: "kunde", status: "aktiv", permissions: { view: true, edit: false, delete: false } },
-  { id: 3, name: "Thomas Klein", email: "thomas@example.com", role: "kunde", status: "aktiv", permissions: { view: true, edit: true, delete: false } },
-  { id: 4, name: "Sarah Lang", email: "sarah@example.com", role: "kunde", status: "gesperrt", permissions: { view: true, edit: false, delete: false } },
-  { id: 5, name: "Max Bauer", email: "max@example.com", role: "admin", status: "aktiv", permissions: { view: true, edit: true, delete: true } },
+  { id: 1, name: "Admin User", email: "admin@spielzeugtraum.de", role: "admin", status: "active", permissions: { view: true, edit: true, delete: true } },
+  { id: 2, name: "Anna Müller", email: "anna@example.com", role: "customer", status: "active", permissions: { view: true, edit: false, delete: false } },
+  { id: 3, name: "Thomas Klein", email: "thomas@example.com", role: "customer", status: "active", permissions: { view: true, edit: true, delete: false } },
+  { id: 4, name: "Sarah Lang", email: "sarah@example.com", role: "customer", status: "blocked", permissions: { view: true, edit: false, delete: false } },
+  { id: 5, name: "Max Bauer", email: "max@example.com", role: "admin", status: "active", permissions: { view: true, edit: true, delete: true } },
 ];
 
 export default function AdminUsers() {
@@ -33,7 +33,7 @@ export default function AdminUsers() {
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [editUser, setEditUser] = useState<UserData | null>(null);
-  const [newUser, setNewUser] = useState({ name: "", email: "", password: "", role: "kunde" as "admin" | "kunde" });
+  const [newUser, setNewUser] = useState({ name: "", email: "", password: "", role: "customer" as "admin" | "customer" });
   const { toast } = useToast();
 
   const filtered = users.filter(
@@ -42,24 +42,24 @@ export default function AdminUsers() {
 
   const handleCreate = () => {
     if (!newUser.name || !newUser.email || !newUser.password) {
-      toast({ title: "Fehler", description: "Alle Felder müssen ausgefüllt werden.", variant: "destructive" });
+      toast({ title: "Error", description: "All fields are required.", variant: "destructive" });
       return;
     }
     const user: UserData = {
-      id: Date.now(), ...newUser, status: "aktiv",
+      id: Date.now(), ...newUser, status: "active",
       permissions: newUser.role === "admin" ? { view: true, edit: true, delete: true } : { view: true, edit: false, delete: false },
     };
     setUsers([user, ...users]);
-    setNewUser({ name: "", email: "", password: "", role: "kunde" });
+    setNewUser({ name: "", email: "", password: "", role: "customer" });
     setCreateOpen(false);
-    toast({ title: "Erstellt", description: `${user.name} wurde hinzugefügt.` });
+    toast({ title: "Created", description: `${user.name} has been added.` });
   };
 
   const toggleStatus = (id: number) => {
     setUsers(users.map((u) =>
-      u.id === id ? { ...u, status: u.status === "aktiv" ? "gesperrt" : "aktiv" } : u
+      u.id === id ? { ...u, status: u.status === "active" ? "blocked" : "active" } : u
     ));
-    toast({ title: "Status geändert" });
+    toast({ title: "Status changed" });
   };
 
   const updatePermission = (id: number, perm: keyof UserData["permissions"], val: boolean) => {
@@ -71,32 +71,32 @@ export default function AdminUsers() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h1 className="text-2xl font-display font-bold">Benutzerverwaltung</h1>
+        <h1 className="text-2xl font-display font-bold">User Management</h1>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
             <Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2">
-              <Plus className="h-4 w-4" /> Neuer Benutzer
+              <Plus className="h-4 w-4" /> New User
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader><DialogTitle>Benutzer erstellen</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Create User</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Name</Label><Input value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} /></div>
-              <div><Label>E-Mail</Label><Input type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} /></div>
-              <div><Label>Passwort</Label><Input type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} /></div>
+              <div><Label>Email</Label><Input type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} /></div>
+              <div><Label>Password</Label><Input type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} /></div>
               <div>
-                <Label>Rolle</Label>
-                <Select value={newUser.role} onValueChange={(v) => setNewUser({ ...newUser, role: v as "admin" | "kunde" })}>
+                <Label>Role</Label>
+                <Select value={newUser.role} onValueChange={(v) => setNewUser({ ...newUser, role: v as "admin" | "customer" })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="kunde">Kunde</SelectItem>
+                    <SelectItem value="customer">Customer</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleCreate} className="bg-accent hover:bg-accent/90 text-accent-foreground">Erstellen</Button>
+              <Button onClick={handleCreate} className="bg-accent hover:bg-accent/90 text-accent-foreground">Create</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -104,7 +104,7 @@ export default function AdminUsers() {
 
       <div className="relative max-w-sm">
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Benutzer suchen..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Input placeholder="Search users..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
       <Card className="border-none shadow-md">
@@ -114,11 +114,11 @@ export default function AdminUsers() {
               <thead>
                 <tr className="border-b bg-muted/30 text-left">
                   <th className="p-3 font-medium">Name</th>
-                  <th className="p-3 font-medium">E-Mail</th>
-                  <th className="p-3 font-medium">Rolle</th>
+                  <th className="p-3 font-medium">Email</th>
+                  <th className="p-3 font-medium">Role</th>
                   <th className="p-3 font-medium">Status</th>
-                  <th className="p-3 font-medium">Rechte</th>
-                  <th className="p-3 font-medium">Aktionen</th>
+                  <th className="p-3 font-medium">Permissions</th>
+                  <th className="p-3 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -135,10 +135,10 @@ export default function AdminUsers() {
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <Switch
-                          checked={u.status === "aktiv"}
+                          checked={u.status === "active"}
                           onCheckedChange={() => toggleStatus(u.id)}
                         />
-                        <span className={u.status === "aktiv" ? "text-admin-success" : "text-destructive"}>
+                        <span className={u.status === "active" ? "text-admin-success" : "text-destructive"}>
                           {u.status}
                         </span>
                       </div>
@@ -151,7 +151,7 @@ export default function AdminUsers() {
                               checked={u.permissions[p]}
                               onCheckedChange={(v) => updatePermission(u.id, p, !!v)}
                             />
-                            {p === "view" ? "Lesen" : p === "edit" ? "Bearbeiten" : "Löschen"}
+                            {p === "view" ? "View" : p === "edit" ? "Edit" : "Delete"}
                           </label>
                         ))}
                       </div>
@@ -164,27 +164,27 @@ export default function AdminUsers() {
                           </Button>
                         </DialogTrigger>
                         <DialogContent>
-                          <DialogHeader><DialogTitle>Benutzer bearbeiten</DialogTitle></DialogHeader>
+                          <DialogHeader><DialogTitle>Edit User</DialogTitle></DialogHeader>
                           {editUser && (
                             <div className="space-y-3">
                               <div><Label>Name</Label><Input defaultValue={editUser.name} /></div>
-                              <div><Label>E-Mail</Label><Input defaultValue={editUser.email} /></div>
+                              <div><Label>Email</Label><Input defaultValue={editUser.email} /></div>
                               <div>
-                                <Label>Rolle</Label>
+                                <Label>Role</Label>
                                 <Select defaultValue={editUser.role}>
                                   <SelectTrigger><SelectValue /></SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="admin">Admin</SelectItem>
-                                    <SelectItem value="kunde">Kunde</SelectItem>
+                                    <SelectItem value="customer">Customer</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </div>
                             </div>
                           )}
                           <DialogFooter>
-                            <Button onClick={() => { setEditUser(null); toast({ title: "Gespeichert" }); }}
+                            <Button onClick={() => { setEditUser(null); toast({ title: "Saved" }); }}
                               className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                              Speichern
+                              Save
                             </Button>
                           </DialogFooter>
                         </DialogContent>

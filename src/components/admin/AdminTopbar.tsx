@@ -23,7 +23,7 @@ export function AdminTopbar() {
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-primary-foreground/50" />
           <Input
-            placeholder="Suche..."
+            placeholder="Search..."
             className="pl-9 h-8 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/40 text-sm"
           />
         </div>
@@ -58,14 +58,14 @@ export function AdminTopbar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" /> Profil
+              <User className="mr-2 h-4 w-4" /> Profile
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" /> Einstellungen
+              <Settings className="mr-2 h-4 w-4" /> Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive">
-              <LogOut className="mr-2 h-4 w-4" /> Abmelden
+              <LogOut className="mr-2 h-4 w-4" /> Log Out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

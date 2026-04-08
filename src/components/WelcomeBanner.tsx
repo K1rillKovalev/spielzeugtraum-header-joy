@@ -6,7 +6,7 @@ const WelcomeBanner = () => {
     <section className="relative overflow-hidden rounded-3xl shadow-2xl mx-4 sm:mx-0">
       <img
         src={welcomeBanner}
-        alt="Bunte Spielzeuge – Autos, Puppen, Puzzles"
+        alt="Colorful toys – cars, dolls, puzzles"
         className="w-full h-[250px] sm:h-[320px] md:h-[400px] object-cover"
         width={1920}
         height={600}
@@ -20,13 +20,13 @@ const WelcomeBanner = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary-foreground leading-tight mb-3">
-            Willkommen bei SpielzeugTraum
+            Welcome to SpielzeugTraum
           </h2>
           <p className="font-body text-primary-foreground/90 text-base sm:text-lg md:text-xl mb-1">
-            Spaß für jedes Kind! 🎈
+            Fun for Every Child! 🎈
           </p>
           <p className="font-body text-primary-foreground/70 text-sm sm:text-base">
-            Entdecke über 1.000 Spielzeuge für alle Altersgruppen
+            Discover over 1,000 toys for all age groups
           </p>
         </motion.div>
       </div>

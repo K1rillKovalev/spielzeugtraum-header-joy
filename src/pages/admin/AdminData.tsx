@@ -11,19 +11,19 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
 const products = [
-  { id: 1, name: "Holzzug Deluxe", category: "Holzspielzeug", price: "€34,99", stock: 48 },
-  { id: 2, name: "Kuschelbär Bruno", category: "Plüsch", price: "€19,99", stock: 120 },
-  { id: 3, name: "Puzzle Weltkarte", category: "Puzzle", price: "€14,99", stock: 85 },
-  { id: 4, name: "Rennwagen Rot", category: "Autos", price: "€24,99", stock: 63 },
-  { id: 5, name: "Puppe Marie", category: "Puppen", price: "€29,99", stock: 37 },
-  { id: 6, name: "Lern-Tablet Mini", category: "Lernspielzeug", price: "€44,99", stock: 22 },
+  { id: 1, name: "Wooden Train Deluxe", category: "Wooden Toys", price: "€34.99", stock: 48 },
+  { id: 2, name: "Teddy Bear Bruno", category: "Plush", price: "€19.99", stock: 120 },
+  { id: 3, name: "World Map Puzzle", category: "Puzzles", price: "€14.99", stock: 85 },
+  { id: 4, name: "Red Race Car", category: "Cars", price: "€24.99", stock: 63 },
+  { id: 5, name: "Doll Marie", category: "Dolls", price: "€29.99", stock: 37 },
+  { id: 6, name: "Mini Learning Tablet", category: "Educational", price: "€44.99", stock: 22 },
 ];
 
 const orders = [
-  { id: "#4821", date: "08.04.2026", customer: "Anna M.", total: "€34,99", status: "Versendet" },
-  { id: "#4820", date: "08.04.2026", customer: "Thomas K.", total: "€89,50", status: "Offen" },
-  { id: "#4819", date: "07.04.2026", customer: "Sarah L.", total: "€19,99", status: "Versendet" },
-  { id: "#4818", date: "07.04.2026", customer: "Max B.", total: "€54,00", status: "Bezahlt" },
+  { id: "#4821", date: "04/08/2026", customer: "Anna M.", total: "€34.99", status: "Shipped" },
+  { id: "#4820", date: "04/08/2026", customer: "Thomas K.", total: "€89.50", status: "Open" },
+  { id: "#4819", date: "04/07/2026", customer: "Sarah L.", total: "€19.99", status: "Shipped" },
+  { id: "#4818", date: "04/07/2026", customer: "Max B.", total: "€54.00", status: "Paid" },
 ];
 
 export default function AdminData() {
@@ -31,23 +31,23 @@ export default function AdminData() {
   const [page, setPage] = useState(1);
   const { toast } = useToast();
 
-  const handleExport = () => toast({ title: "Export gestartet", description: "CSV wird heruntergeladen..." });
-  const handleImport = () => toast({ title: "Import", description: "Datei auswählen zum Importieren." });
+  const handleExport = () => toast({ title: "Export started", description: "CSV is being downloaded..." });
+  const handleImport = () => toast({ title: "Import", description: "Select a file to import." });
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-display font-bold">Datenmanagement</h1>
+      <h1 className="text-2xl font-display font-bold">Data Management</h1>
 
       <Tabs defaultValue="products">
         <TabsList>
-          <TabsTrigger value="products">Produkte</TabsTrigger>
-          <TabsTrigger value="orders">Bestellungen</TabsTrigger>
+          <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="orders">Orders</TabsTrigger>
         </TabsList>
 
         <div className="flex flex-col sm:flex-row gap-3 mt-4">
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Suchen..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <Input placeholder="Search..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <div className="flex gap-2">
             <Button variant="outline" className="gap-2 border-admin-accent text-admin-accent hover:bg-admin-accent hover:text-admin-accent-foreground" onClick={handleImport}>
@@ -58,20 +58,20 @@ export default function AdminData() {
             </Button>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2"><Plus className="h-4 w-4" /> Neu</Button>
+                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2"><Plus className="h-4 w-4" /> New</Button>
               </DialogTrigger>
               <DialogContent>
-                <DialogHeader><DialogTitle>Neuer Eintrag</DialogTitle></DialogHeader>
+                <DialogHeader><DialogTitle>New Entry</DialogTitle></DialogHeader>
                 <div className="space-y-3">
-                  <div><Label>Name</Label><Input placeholder="Produktname..." /></div>
-                  <div><Label>Kategorie</Label><Input placeholder="Kategorie..." /></div>
-                  <div><Label>Preis</Label><Input placeholder="€0,00" /></div>
-                  <div><Label>Bestand</Label><Input type="number" placeholder="0" /></div>
-                  <div><Label>Bild hochladen</Label><Input type="file" accept="image/*" /></div>
+                  <div><Label>Name</Label><Input placeholder="Product name..." /></div>
+                  <div><Label>Category</Label><Input placeholder="Category..." /></div>
+                  <div><Label>Price</Label><Input placeholder="€0.00" /></div>
+                  <div><Label>Stock</Label><Input type="number" placeholder="0" /></div>
+                  <div><Label>Upload Image</Label><Input type="file" accept="image/*" /></div>
                 </div>
                 <DialogFooter>
                   <Button className="bg-accent hover:bg-accent/90 text-accent-foreground"
-                    onClick={() => toast({ title: "Gespeichert" })}>Speichern</Button>
+                    onClick={() => toast({ title: "Saved" })}>Save</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -87,10 +87,10 @@ export default function AdminData() {
                     <tr className="border-b bg-muted/30 text-left">
                       <th className="p-3 font-medium">ID</th>
                       <th className="p-3 font-medium">Name</th>
-                      <th className="p-3 font-medium">Kategorie</th>
-                      <th className="p-3 font-medium">Preis</th>
-                      <th className="p-3 font-medium">Bestand</th>
-                      <th className="p-3 font-medium">Aktionen</th>
+                      <th className="p-3 font-medium">Category</th>
+                      <th className="p-3 font-medium">Price</th>
+                      <th className="p-3 font-medium">Stock</th>
+                      <th className="p-3 font-medium">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -113,7 +113,7 @@ export default function AdminData() {
                 </table>
               </div>
               <div className="flex items-center justify-between p-3 border-t">
-                <span className="text-xs text-muted-foreground">Seite {page} von 1</span>
+                <span className="text-xs text-muted-foreground">Page {page} of 1</span>
                 <div className="flex gap-1">
                   <Button variant="ghost" size="icon" className="h-7 w-7" disabled><ChevronLeft className="h-4 w-4" /></Button>
                   <Button variant="ghost" size="icon" className="h-7 w-7" disabled><ChevronRight className="h-4 w-4" /></Button>
@@ -130,12 +130,12 @@ export default function AdminData() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b bg-muted/30 text-left">
-                      <th className="p-3 font-medium">Bestellung</th>
-                      <th className="p-3 font-medium">Datum</th>
-                      <th className="p-3 font-medium">Kunde</th>
-                      <th className="p-3 font-medium">Betrag</th>
+                      <th className="p-3 font-medium">Order</th>
+                      <th className="p-3 font-medium">Date</th>
+                      <th className="p-3 font-medium">Customer</th>
+                      <th className="p-3 font-medium">Amount</th>
                       <th className="p-3 font-medium">Status</th>
-                      <th className="p-3 font-medium">Aktionen</th>
+                      <th className="p-3 font-medium">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -147,8 +147,8 @@ export default function AdminData() {
                         <td className="p-3 font-semibold">{o.total}</td>
                         <td className="p-3">
                           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            o.status === "Versendet" ? "bg-admin-success/15 text-admin-success"
-                            : o.status === "Offen" ? "bg-admin-warning/15 text-admin-warning"
+                            o.status === "Shipped" ? "bg-admin-success/15 text-admin-success"
+                            : o.status === "Open" ? "bg-admin-warning/15 text-admin-warning"
                             : "bg-accent/15 text-accent"
                           }`}>{o.status}</span>
                         </td>
