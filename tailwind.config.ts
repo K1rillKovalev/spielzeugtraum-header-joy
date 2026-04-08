@@ -56,6 +56,13 @@ export default {
           foreground: "hsl(var(--cta-foreground))",
         },
         "hero-bg": "hsl(var(--hero-bg))",
+        "body-bg": "hsl(var(--body-bg))",
+        "product-card": "hsl(var(--product-card))",
+        rating: "hsl(var(--rating))",
+        "badge-success": {
+          DEFAULT: "hsl(var(--badge-success))",
+          foreground: "hsl(var(--badge-success-foreground))",
+        },
         logo: "hsl(var(--logo))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
