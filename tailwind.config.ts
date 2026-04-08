@@ -64,6 +64,17 @@ export default {
           foreground: "hsl(var(--badge-success-foreground))",
         },
         logo: "hsl(var(--logo))",
+        admin: {
+          bg: "hsl(var(--admin-bg))",
+          card: "hsl(var(--admin-card))",
+          "card-foreground": "hsl(var(--admin-card-foreground))",
+          accent: "hsl(var(--admin-accent))",
+          "accent-foreground": "hsl(var(--admin-accent-foreground))",
+          cta: "hsl(var(--admin-cta))",
+          "cta-foreground": "hsl(var(--admin-cta-foreground))",
+          success: "hsl(var(--admin-success))",
+          warning: "hsl(var(--admin-warning))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
