@@ -41,25 +41,7 @@ const Header = () => {
         </motion.div>
       ))}
 
-      <div className="container mx-auto px-4 pt-6 pb-8 relative z-10">
-        {/* Top bar */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <GermanFlag />
-            <span className="text-sm font-body text-foreground/70 hidden sm:inline">DE</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" aria-label="Wunschliste">
-              <Heart size={20} />
-            </Button>
-            <Button variant="ghost" size="icon" className="relative" aria-label="Warenkorb">
-              <ShoppingCart size={20} />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-cta text-cta-foreground text-xs rounded-full flex items-center justify-center font-bold">
-                0
-              </span>
-            </Button>
-          </div>
-        </div>
+      <div className="container mx-auto px-4 pt-8 pb-8 relative z-10">
 
         {/* Logo */}
         <motion.div
