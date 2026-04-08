@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import WelcomeBanner from "@/components/WelcomeBanner";
 import ProductGrid from "@/components/ProductGrid";
 import AgeCategories from "@/components/AgeCategories";
@@ -43,6 +44,8 @@ const Index = () => {
         {/* Trust Badges */}
         <TrustBadges />
       </main>
+
+      <Footer />
     </div>
   );
 };
