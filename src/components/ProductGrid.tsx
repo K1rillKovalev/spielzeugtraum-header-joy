@@ -10,18 +10,18 @@ import productBlocks from "@/assets/product-blocks.jpg";
 import productTrain from "@/assets/product-train.jpg";
 
 const products = [
-  { name: "Rennwagen Turbo", price: "19,99€", oldPrice: "24,99€", rating: 5, image: productCar, badge: "Sofort lieferbar" },
-  { name: "Stoffpuppe Lina", price: "24,99€", oldPrice: null, rating: 4, image: productDoll, badge: "Bestseller" },
-  { name: "Tierpuzzle Set", price: "14,99€", oldPrice: "18,99€", rating: 5, image: productPuzzle, badge: "Sofort lieferbar" },
-  { name: "Kuschelbär Bruno", price: "29,99€", oldPrice: null, rating: 5, image: productTeddy, badge: "Sofort lieferbar" },
-  { name: "Bauklötze Bunt", price: "22,99€", oldPrice: "27,99€", rating: 4, image: productBlocks, badge: "Top Angebot" },
-  { name: "Holzeisenbahn", price: "34,99€", oldPrice: "39,99€", rating: 5, image: productTrain, badge: "Sofort lieferbar" },
+  { name: "Turbo Race Car", price: "€19.99", oldPrice: "€24.99", rating: 5, image: productCar, badge: "In Stock" },
+  { name: "Rag Doll Lina", price: "€24.99", oldPrice: null, rating: 4, image: productDoll, badge: "Bestseller" },
+  { name: "Animal Puzzle Set", price: "€14.99", oldPrice: "€18.99", rating: 5, image: productPuzzle, badge: "In Stock" },
+  { name: "Teddy Bear Bruno", price: "€29.99", oldPrice: null, rating: 5, image: productTeddy, badge: "In Stock" },
+  { name: "Colorful Building Blocks", price: "€22.99", oldPrice: "€27.99", rating: 4, image: productBlocks, badge: "Top Deal" },
+  { name: "Wooden Train", price: "€34.99", oldPrice: "€39.99", rating: 5, image: productTrain, badge: "In Stock" },
 ];
 
 const ProductCard = ({ product, index }: { product: typeof products[0]; index: number }) => {
   const badgeColor = product.badge === "Bestseller"
     ? "bg-rating text-foreground"
-    : product.badge === "Top Angebot"
+    : product.badge === "Top Deal"
     ? "bg-accent text-accent-foreground"
     : "bg-cta text-cta-foreground";
 
@@ -55,7 +55,7 @@ const ProductCard = ({ product, index }: { product: typeof products[0]; index: n
             className="opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300"
           >
             <ShoppingCart size={16} />
-            In den Warenkorb
+            Add to Cart
           </Button>
         </div>
       </div>
@@ -97,10 +97,10 @@ const ProductGrid = () => {
         viewport={{ once: true }}
       >
         <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-foreground mb-2">
-          ⭐ Top Bestseller
+          ⭐ Top Bestsellers
         </h2>
         <p className="font-body text-muted-foreground text-base">
-          Die beliebtesten Spielzeuge unserer kleinen Kunden
+          The most popular toys among our little customers
         </p>
       </motion.div>
 

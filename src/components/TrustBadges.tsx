@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { ShieldCheck, Truck, RotateCcw, CreditCard } from "lucide-react";
 
 const badges = [
-  { Icon: ShieldCheck, label: "Sichere Zahlung", desc: "SSL-verschlüsselt" },
-  { Icon: Truck, label: "Kostenloser Versand", desc: "Ab 50€ Bestellwert" },
-  { Icon: RotateCcw, label: "30 Tage Rückgabe", desc: "Ohne Wenn & Aber" },
-  { Icon: CreditCard, label: "Zahlungsarten", desc: "PayPal, Klarna, Karte" },
+  { Icon: ShieldCheck, label: "Secure Payment", desc: "SSL encrypted" },
+  { Icon: Truck, label: "Free Shipping", desc: "On orders over €50" },
+  { Icon: RotateCcw, label: "30-Day Returns", desc: "No questions asked" },
+  { Icon: CreditCard, label: "Payment Methods", desc: "PayPal, Klarna, Card" },
 ];
 
 const TrustBadges = () => {

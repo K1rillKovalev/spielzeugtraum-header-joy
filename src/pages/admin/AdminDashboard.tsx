@@ -6,31 +6,31 @@ import {
 } from "recharts";
 
 const metrics = [
-  { title: "Gesamtumsatz", value: "€48.350", change: "+12,5%", up: true, icon: TrendingUp },
-  { title: "Bestellungen heute", value: "127", change: "+8,3%", up: true, icon: ShoppingCart },
-  { title: "Aktive Nutzer", value: "3.841", change: "+4,2%", up: true, icon: Users },
-  { title: "Top Spielzeug", value: "Holzzug", change: "342 verkauft", up: true, icon: Star },
+  { title: "Total Revenue", value: "€48,350", change: "+12.5%", up: true, icon: TrendingUp },
+  { title: "Orders Today", value: "127", change: "+8.3%", up: true, icon: ShoppingCart },
+  { title: "Active Users", value: "3,841", change: "+4.2%", up: true, icon: Users },
+  { title: "Top Toy", value: "Wooden Train", change: "342 sold", up: true, icon: Star },
 ];
 
 const salesData = [
-  { name: "Mo", umsatz: 4200 }, { name: "Di", umsatz: 3800 },
-  { name: "Mi", umsatz: 5100 }, { name: "Do", umsatz: 4700 },
-  { name: "Fr", umsatz: 6300 }, { name: "Sa", umsatz: 7800 },
-  { name: "So", umsatz: 5400 },
+  { name: "Mon", revenue: 4200 }, { name: "Tue", revenue: 3800 },
+  { name: "Wed", revenue: 5100 }, { name: "Thu", revenue: 4700 },
+  { name: "Fri", revenue: 6300 }, { name: "Sat", revenue: 7800 },
+  { name: "Sun", revenue: 5400 },
 ];
 
 const ordersData = [
-  { name: "Puppen", bestellungen: 85 }, { name: "Autos", bestellungen: 120 },
-  { name: "Puzzle", bestellungen: 65 }, { name: "Holz", bestellungen: 95 },
-  { name: "Lern", bestellungen: 70 }, { name: "Plüsch", bestellungen: 110 },
+  { name: "Dolls", orders: 85 }, { name: "Cars", orders: 120 },
+  { name: "Puzzles", orders: 65 }, { name: "Wooden", orders: 95 },
+  { name: "Educational", orders: 70 }, { name: "Plush", orders: 110 },
 ];
 
 const recentOrders = [
-  { id: "#4821", customer: "Anna M.", total: "€34,99", status: "Versendet" },
-  { id: "#4820", customer: "Thomas K.", total: "€89,50", status: "In Bearbeitung" },
-  { id: "#4819", customer: "Sarah L.", total: "€19,99", status: "Versendet" },
-  { id: "#4818", customer: "Max B.", total: "€54,00", status: "Bezahlt" },
-  { id: "#4817", customer: "Julia H.", total: "€127,80", status: "Versendet" },
+  { id: "#4821", customer: "Anna M.", total: "€34.99", status: "Shipped" },
+  { id: "#4820", customer: "Thomas K.", total: "€89.50", status: "Processing" },
+  { id: "#4819", customer: "Sarah L.", total: "€19.99", status: "Shipped" },
+  { id: "#4818", customer: "Max B.", total: "€54.00", status: "Paid" },
+  { id: "#4817", customer: "Julia H.", total: "€127.80", status: "Shipped" },
 ];
 
 export default function AdminDashboard() {
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card className="border-none shadow-md">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-display">Umsatz diese Woche</CardTitle>
+            <CardTitle className="text-base font-display">Revenue This Week</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={240}>
@@ -77,7 +77,7 @@ export default function AdminDashboard() {
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip />
                 <Line
-                  type="monotone" dataKey="umsatz" name="Umsatz €"
+                  type="monotone" dataKey="revenue" name="Revenue €"
                   stroke="hsl(343, 83%, 61%)" strokeWidth={2.5}
                   dot={{ fill: "hsl(343, 83%, 61%)", r: 4 }}
                 />
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
 
         <Card className="border-none shadow-md">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-display">Bestellungen nach Kategorie</CardTitle>
+            <CardTitle className="text-base font-display">Orders by Category</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={240}>
@@ -97,7 +97,7 @@ export default function AdminDashboard() {
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip />
-                <Bar dataKey="bestellungen" name="Bestellungen" fill="hsl(338, 72%, 34%)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="orders" name="Orders" fill="hsl(338, 72%, 34%)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -107,16 +107,16 @@ export default function AdminDashboard() {
       {/* Recent Orders */}
       <Card className="border-none shadow-md">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base font-display">Letzte Bestellungen</CardTitle>
+          <CardTitle className="text-base font-display">Recent Orders</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b text-left text-muted-foreground">
-                  <th className="pb-2 font-medium">Bestellung</th>
-                  <th className="pb-2 font-medium">Kunde</th>
-                  <th className="pb-2 font-medium">Betrag</th>
+                  <th className="pb-2 font-medium">Order</th>
+                  <th className="pb-2 font-medium">Customer</th>
+                  <th className="pb-2 font-medium">Amount</th>
                   <th className="pb-2 font-medium">Status</th>
                 </tr>
               </thead>
@@ -128,9 +128,9 @@ export default function AdminDashboard() {
                     <td className="py-2.5 font-semibold">{o.total}</td>
                     <td className="py-2.5">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        o.status === "Versendet"
+                        o.status === "Shipped"
                           ? "bg-admin-success/15 text-admin-success"
-                          : o.status === "In Bearbeitung"
+                          : o.status === "Processing"
                           ? "bg-admin-warning/15 text-admin-warning"
                           : "bg-accent/15 text-accent"
                       }`}>

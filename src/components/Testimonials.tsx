@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 
 const testimonials = [
-  { name: "Anna M.", text: "Schnelle Lieferung! Meine Tochter war begeistert vom Kuschelbär. Werde definitiv wieder bestellen.", rating: 5 },
-  { name: "Markus T.", text: "Tolle Qualität bei den Holzspielzeugen. Alles sicher verpackt und pünktlich geliefert.", rating: 5 },
-  { name: "Sarah K.", text: "Super Auswahl und faire Preise. Der Kundenservice hat mir sehr schnell geholfen!", rating: 4 },
+  { name: "Anna M.", text: "Fast delivery! My daughter was thrilled with the teddy bear. Will definitely order again.", rating: 5 },
+  { name: "Markus T.", text: "Great quality on the wooden toys. Everything securely packed and delivered on time.", rating: 5 },
+  { name: "Sarah K.", text: "Excellent selection and fair prices. Customer service helped me very quickly!", rating: 4 },
 ];
 
 const Testimonials = () => {
@@ -17,7 +17,7 @@ const Testimonials = () => {
         viewport={{ once: true }}
       >
         <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-foreground mb-2">
-          💬 Das sagen unsere Kunden
+          💬 What Our Customers Say
         </h2>
       </motion.div>
 
