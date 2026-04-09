@@ -9,7 +9,7 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-12 sm:py-16" id="reviews">
       <motion.div
         className="text-center mb-10"
         initial={{ opacity: 0, y: 20 }}

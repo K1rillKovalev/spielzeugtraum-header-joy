@@ -6,7 +6,7 @@ const navItems = [
   { label: "Home", href: "#home" },
   { label: "Bestsellers", href: "#bestseller" },
   { label: "By Age", href: "#nach-alter" },
-  { label: "Wooden Toys", href: "#holzspielzeug" },
+  { label: "Reviews", href: "#reviews" },
   { label: "Deals", href: "#angebote" },
 ];
 
