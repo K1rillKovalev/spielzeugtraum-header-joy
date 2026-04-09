@@ -11,6 +11,14 @@ const badges = [
 const TrustBadges = () => {
   return (
     <section className="py-10">
+      <motion.h2
+        className="font-display text-3xl sm:text-4xl font-extrabold text-primary text-center mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+        We care about your happiness...
+      </motion.h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {badges.map(({ Icon, label, desc }, i) => (
           <motion.div
