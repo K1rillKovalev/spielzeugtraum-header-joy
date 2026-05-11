@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { ShoppingCart, Menu, X, Truck, User, ChevronDown } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ShoppingCart, Menu, X, Truck, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
@@ -12,11 +13,10 @@ const navItems = [
 const categories = ["Dolls", "Cars", "Educational Toys", "Wooden Toys", "Board Games"];
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("Home");
-  const [catOpen, setCatOpen] = useState(false);
-  const [mobileCatOpen, setMobileCatOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -27,8 +27,16 @@ const Navbar = () => {
   const handleClick = (label: string, href: string) => {
     setActive(label);
     setMobileOpen(false);
-    const el = document.querySelector(href);
-    el?.scrollIntoView({ behavior: "smooth" });
+    if (href.startsWith("#")) {
+      if (window.location.pathname !== "/") {
+        navigate("/" + href);
+        return;
+      }
+      const el = document.querySelector(href);
+      el?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate(href);
+    }
   };
 
   return (
