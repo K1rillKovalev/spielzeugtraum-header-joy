@@ -104,6 +104,7 @@ const Navbar = () => {
               <span className="hidden sm:inline">My Account</span>
             </button>
             <button
+              onClick={() => navigate("/cart")}
               className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold font-body text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20 transition-all duration-200"
               aria-label="Cart"
             >
