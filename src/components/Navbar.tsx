@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ShoppingCart, Menu, X, Truck, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,8 +9,6 @@ const navItems = [
   { label: "By Age", href: "#nach-alter" },
   { label: "Reviews", href: "#reviews" },
 ];
-
-const categories = ["Dolls", "Cars", "Educational Toys", "Wooden Toys", "Board Games"];
 
 const Navbar = () => {
   const navigate = useNavigate();
