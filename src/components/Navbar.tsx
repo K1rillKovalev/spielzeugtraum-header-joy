@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { ShoppingCart, Menu, X, Truck, User, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ShoppingCart, Menu, X, Truck, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
@@ -9,14 +10,11 @@ const navItems = [
   { label: "Reviews", href: "#reviews" },
 ];
 
-const categories = ["Dolls", "Cars", "Educational Toys", "Wooden Toys", "Board Games"];
-
 const Navbar = () => {
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("Home");
-  const [catOpen, setCatOpen] = useState(false);
-  const [mobileCatOpen, setMobileCatOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -27,8 +25,16 @@ const Navbar = () => {
   const handleClick = (label: string, href: string) => {
     setActive(label);
     setMobileOpen(false);
-    const el = document.querySelector(href);
-    el?.scrollIntoView({ behavior: "smooth" });
+    if (href.startsWith("#")) {
+      if (window.location.pathname !== "/") {
+        navigate("/" + href);
+        return;
+      }
+      const el = document.querySelector(href);
+      el?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate(href);
+    }
   };
 
   return (
@@ -74,46 +80,17 @@ const Navbar = () => {
                 </button>
               </li>
             ))}
-            {/* Categories dropdown */}
-            <li
-              className="relative"
-              onMouseEnter={() => setCatOpen(true)}
-              onMouseLeave={() => setCatOpen(false)}
-            >
+            <li>
               <button
-                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold font-body transition-all duration-200 ${
-                  active === "Categories"
+                onClick={() => handleClick("Catalogue", "/catalogue")}
+                className={`px-3 py-1.5 rounded-full text-sm font-semibold font-body transition-all duration-200 ${
+                  active === "Catalogue"
                     ? "text-[hsl(var(--nav-active))] bg-card/40"
                     : "text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20"
                 }`}
               >
-                Categories
-                <ChevronDown size={14} className={`transition-transform duration-200 ${catOpen ? "rotate-180" : ""}`} />
+                Catalogue
               </button>
-              <AnimatePresence>
-                {catOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-full left-0 mt-1 w-48 rounded-xl bg-card/95 backdrop-blur-md shadow-xl border border-border/30 py-2 z-50"
-                  >
-                    {categories.map((cat) => (
-                      <button
-                        key={cat}
-                        className="w-full text-left px-4 py-2.5 text-sm font-body font-medium text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-primary/10 transition-colors duration-150"
-                        onClick={() => {
-                          setActive("Categories");
-                          setCatOpen(false);
-                        }}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </li>
           </ul>
 
@@ -172,44 +149,18 @@ const Navbar = () => {
                   </button>
                 </li>
               ))}
-              {/* Mobile categories */}
+              {/* Mobile catalogue */}
               <li>
                 <button
-                  onClick={() => setMobileCatOpen(!mobileCatOpen)}
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold font-body transition-all duration-200 flex items-center justify-between ${
-                    active === "Categories"
+                  onClick={() => handleClick("Catalogue", "/catalogue")}
+                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold font-body transition-all duration-200 ${
+                    active === "Catalogue"
                       ? "text-[hsl(var(--nav-active))] bg-card/40"
                       : "text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20"
                   }`}
                 >
-                  Categories
-                  <ChevronDown size={14} className={`transition-transform duration-200 ${mobileCatOpen ? "rotate-180" : ""}`} />
+                  Catalogue
                 </button>
-                <AnimatePresence>
-                  {mobileCatOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                      className="overflow-hidden pl-4"
-                    >
-                      {categories.map((cat) => (
-                        <button
-                          key={cat}
-                          className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-body text-foreground/70 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20 transition-colors duration-150"
-                          onClick={() => {
-                            setActive("Categories");
-                            setMobileOpen(false);
-                            setMobileCatOpen(false);
-                          }}
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </li>
             </ul>
           </motion.div>
