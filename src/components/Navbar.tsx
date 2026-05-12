@@ -97,6 +97,7 @@ const Navbar = () => {
           {/* Right icons */}
           <div className="flex items-center gap-2">
             <button
+              onClick={() => navigate("/account")}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold font-body text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20 transition-all duration-200"
               aria-label="My Account"
             >
