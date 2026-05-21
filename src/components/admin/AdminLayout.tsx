@@ -1,9 +1,11 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminTopbar } from "./AdminTopbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
+import { adminAuth } from "@/lib/adminAuth";
 
 export function AdminLayout() {
+  if (!adminAuth.get()) return <Navigate to="/admin/login" replace />;
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-admin-bg">

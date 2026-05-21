@@ -1,32 +1,27 @@
 import {
-  LayoutDashboard,
-  Users,
-  Database,
-  BarChart3,
-  Settings,
-  Package,
+  LayoutDashboard, Users, UserSquare2, Package, ShoppingBag, Boxes,
+  Truck, Tags, Image, Mail, BarChart3, Settings,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  useSidebar,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar,
 } from "@/components/ui/sidebar";
 
 const navItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "User Management", url: "/admin/users", icon: Users },
-  { title: "Data Management", url: "/admin/data", icon: Database },
+  { title: "Customers", url: "/admin/customers", icon: UserSquare2 },
+  { title: "Catalogue", url: "/admin/catalogue", icon: Package },
+  { title: "Orders", url: "/admin/orders", icon: ShoppingBag },
+  { title: "Inventory", url: "/admin/inventory", icon: Boxes },
+  { title: "Suppliers", url: "/admin/suppliers", icon: Truck },
+  { title: "Promotions", url: "/admin/promotions", icon: Tags },
+  { title: "Content", url: "/admin/content", icon: Image },
+  { title: "Inquiries", url: "/admin/inquiries", icon: Mail },
   { title: "Statistics", url: "/admin/stats", icon: BarChart3 },
-  { title: "System Settings", url: "/admin/settings", icon: Settings },
+  { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
 export function AdminSidebar() {
@@ -45,11 +40,7 @@ export function AdminSidebar() {
             </span>
           )}
         </div>
-        {!collapsed && (
-          <span className="text-xs text-sidebar-foreground/60 mt-1">
-            Admin Panel
-          </span>
-        )}
+        {!collapsed && <span className="text-xs text-sidebar-foreground/60 mt-1">Admin Panel</span>}
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -65,11 +56,7 @@ export function AdminSidebar() {
                     : location.pathname.startsWith(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive}
-                      tooltip={item.title}
-                    >
+                    <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
                       <NavLink
                         to={item.url}
                         end={item.url === "/admin"}

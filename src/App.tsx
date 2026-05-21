@@ -9,9 +9,17 @@ import Cart from "./pages/Cart.tsx";
 import Account from "./pages/Account.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { AdminLayout } from "./components/admin/AdminLayout";
+import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
-import AdminData from "./pages/admin/AdminData";
+import AdminCustomers from "./pages/admin/AdminCustomers";
+import AdminCatalogue from "./pages/admin/AdminCatalogue";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminInventory from "./pages/admin/AdminInventory";
+import AdminSuppliers from "./pages/admin/AdminSuppliers";
+import AdminPromotions from "./pages/admin/AdminPromotions";
+import AdminContent from "./pages/admin/AdminContent";
+import AdminInquiries from "./pages/admin/AdminInquiries";
 import AdminStats from "./pages/admin/AdminStats";
 import AdminSettings from "./pages/admin/AdminSettings";
 
@@ -28,10 +36,18 @@ const App = () => (
           <Route path="/catalogue" element={<Catalogue />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
-            <Route path="data" element={<AdminData />} />
+            <Route path="customers" element={<AdminCustomers />} />
+            <Route path="catalogue" element={<AdminCatalogue />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="inventory" element={<AdminInventory />} />
+            <Route path="suppliers" element={<AdminSuppliers />} />
+            <Route path="promotions" element={<AdminPromotions />} />
+            <Route path="content" element={<AdminContent />} />
+            <Route path="inquiries" element={<AdminInquiries />} />
             <Route path="stats" element={<AdminStats />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>

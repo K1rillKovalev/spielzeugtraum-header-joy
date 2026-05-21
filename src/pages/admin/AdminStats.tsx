@@ -1,123 +1,114 @@
 import { useState } from "react";
-import { Download, Calendar } from "lucide-react";
+import { Download } from "lucide-react";
+import * as XLSX from "xlsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar, Legend,
+  BarChart, Bar, Legend,
 } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 
-const salesTrend = [
-  { month: "Jan", revenue: 32000 }, { month: "Feb", revenue: 28000 },
-  { month: "Mar", revenue: 35000 }, { month: "Apr", revenue: 42000 },
-  { month: "May", revenue: 38000 }, { month: "Jun", revenue: 45000 },
-  { month: "Jul", revenue: 50000 }, { month: "Aug", revenue: 48000 },
-  { month: "Sep", revenue: 52000 }, { month: "Oct", revenue: 58000 },
-  { month: "Nov", revenue: 62000 }, { month: "Dec", revenue: 75000 },
+// Daily sales (last 7 days)
+const dailySales = [
+  { day: "Mon", revenue: 1240 },
+  { day: "Tue", revenue: 980 },
+  { day: "Wed", revenue: 1530 },
+  { day: "Thu", revenue: 1820 },
+  { day: "Fri", revenue: 2150 },
+  { day: "Sat", revenue: 2780 },
+  { day: "Sun", revenue: 1670 },
 ];
 
-const categories = [
-  { name: "Wooden Toys", value: 30, color: "hsl(338, 72%, 34%)" },
-  { name: "Plush Toys", value: 25, color: "hsl(343, 83%, 61%)" },
-  { name: "Puzzles", value: 15, color: "hsl(349, 52%, 79%)" },
-  { name: "Cars", value: 18, color: "hsl(340, 100%, 18%)" },
-  { name: "Educational", value: 12, color: "hsl(45, 93%, 58%)" },
-];
-
+// Activity vs orders
 const activity = [
-  { day: "Mon", visitors: 1200, orders: 85 },
-  { day: "Tue", visitors: 980, orders: 72 },
-  { day: "Wed", visitors: 1400, orders: 110 },
-  { day: "Thu", visitors: 1100, orders: 88 },
-  { day: "Fri", visitors: 1600, orders: 130 },
-  { day: "Sat", visitors: 1900, orders: 165 },
-  { day: "Sun", visitors: 1300, orders: 95 },
+  { day: "Mon", logins: 142, orders: 32 },
+  { day: "Tue", logins: 118, orders: 28 },
+  { day: "Wed", logins: 165, orders: 41 },
+  { day: "Thu", logins: 187, orders: 47 },
+  { day: "Fri", logins: 220, orders: 58 },
+  { day: "Sat", logins: 268, orders: 71 },
+  { day: "Sun", logins: 195, orders: 43 },
 ];
+
+const datasets: Record<string, { label: string; date: string; revenue: number; orders: number }[]> = {
+  week: dailySales.map((d, i) => ({ label: d.day, date: `2026-05-${12 + i}`, revenue: d.revenue, orders: activity[i].orders })),
+  month: Array.from({ length: 4 }, (_, i) => ({
+    label: `Week ${i + 1}`, date: `2026-05`, revenue: 8000 + i * 1500, orders: 180 + i * 40,
+  })),
+  quarter: Array.from({ length: 3 }, (_, i) => ({
+    label: ["Mar", "Apr", "May"][i], date: `2026-0${i + 3}`, revenue: 38000 + i * 4200, orders: 720 + i * 90,
+  })),
+};
 
 export default function AdminStats() {
-  const [dateRange, setDateRange] = useState("year");
+  const [period, setPeriod] = useState<"week" | "month" | "quarter">("week");
   const { toast } = useToast();
+
+  const exportXlsx = () => {
+    const rows = datasets[period].map((r) => ({
+      Period: r.label, Date: r.date, "Revenue (€)": r.revenue, Orders: r.orders,
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, `Sales ${period}`);
+    XLSX.writeFile(wb, `sales-${period}.xlsx`);
+    toast({ title: "Exported", description: `sales-${period}.xlsx` });
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h1 className="text-2xl font-display font-bold">Statistics</h1>
         <div className="flex gap-2">
-          <Select value={dateRange} onValueChange={setDateRange}>
-            <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+          <Select value={period} onValueChange={(v) => setPeriod(v as typeof period)}>
+            <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="week">This Week</SelectItem>
-              <SelectItem value="month">This Month</SelectItem>
-              <SelectItem value="year">This Year</SelectItem>
+              <SelectItem value="week">Week</SelectItem>
+              <SelectItem value="month">Month</SelectItem>
+              <SelectItem value="quarter">Quarter</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" className="gap-2" onClick={() => toast({ title: "Export", description: "Report is being generated..." })}>
-            <Download className="h-4 w-4" /> Export
+          <Button variant="outline" onClick={exportXlsx} className="gap-2">
+            <Download className="h-4 w-4" /> Export XLSX
           </Button>
         </div>
       </div>
 
-      {/* Sales Trend */}
       <Card className="border-none shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-display">Revenue Trend 2026</CardTitle>
-        </CardHeader>
+        <CardHeader className="pb-2"><CardTitle className="text-base font-display">Daily Sales</CardTitle></CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={salesTrend}>
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={dailySales}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} tickFormatter={(v) => `€${(v / 1000).toFixed(0)}k`} />
-              <Tooltip formatter={(v: number) => [`€${v.toLocaleString("en-US")}`, "Revenue"]} />
-              <Line type="monotone" dataKey="revenue" stroke="hsl(343, 83%, 61%)" strokeWidth={3} dot={{ r: 5, fill: "hsl(343, 83%, 61%)" }} />
+              <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Line type="monotone" dataKey="revenue" name="Revenue €" stroke="hsl(343, 83%, 61%)" strokeWidth={2.5} dot={{ r: 4 }} />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Pie */}
-        <Card className="border-none shadow-md">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-display">Revenue by Category</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={280}>
-              <PieChart>
-                <Pie data={categories} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
-                  {categories.map((c, i) => <Cell key={i} fill={c.color} />)}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Bar */}
-        <Card className="border-none shadow-md">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-display">Weekly Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={activity}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="visitors" name="Visitors" fill="hsl(338, 72%, 34%)" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="orders" name="Orders" fill="hsl(343, 83%, 61%)" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="border-none shadow-md">
+        <CardHeader className="pb-2"><CardTitle className="text-base font-display">Activity vs Orders</CardTitle></CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={activity}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="logins" name="Logins" fill="hsl(338, 72%, 34%)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="orders" name="Orders" fill="hsl(343, 83%, 61%)" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </div>
   );
 }
