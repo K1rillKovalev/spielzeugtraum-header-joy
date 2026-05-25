@@ -3,26 +3,23 @@ import { Search, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
 type Role = "admin" | "marketer" | "accountant" | "user";
-type Status = "active" | "blocked";
 
-interface U { id: number; login: string; role: Role; status: Status; }
+interface U { id: number; login: string; role: Role; }
 
 const initial: U[] = [
-  { id: 1, login: "admin@spielzeugtraum.de", role: "admin", status: "active" },
-  { id: 2, login: "marketing@spielzeugtraum.de", role: "marketer", status: "active" },
-  { id: 3, login: "finance@spielzeugtraum.de", role: "accountant", status: "active" },
-  { id: 4, login: "anna@example.com", role: "user", status: "active" },
-  { id: 5, login: "thomas@example.com", role: "user", status: "active" },
-  { id: 6, login: "sarah@example.com", role: "user", status: "blocked" },
-  { id: 7, login: "max@example.com", role: "user", status: "active" },
+  { id: 1, login: "admin@spielzeugtraum.de", role: "admin" },
+  { id: 2, login: "marketing@spielzeugtraum.de", role: "marketer" },
+  { id: 3, login: "finance@spielzeugtraum.de", role: "accountant" },
+  { id: 4, login: "anna@example.com", role: "user" },
+  { id: 5, login: "thomas@example.com", role: "user" },
+  { id: 6, login: "sarah@example.com", role: "user" },
+  { id: 7, login: "max@example.com", role: "user" },
 ];
 
 const roleColors: Record<Role, string> = {
@@ -43,10 +40,6 @@ export default function AdminUsers() {
     setUsers((us) => us.map((u) => (u.id === id ? { ...u, role } : u)));
     toast({ title: "Role updated" });
   };
-  const toggle = (id: number) => {
-    setUsers((us) => us.map((u) => (u.id === id ? { ...u, status: u.status === "active" ? "blocked" : "active" } : u)));
-    toast({ title: "Status changed" });
-  };
 
   return (
     <div className="space-y-6">
@@ -63,7 +56,6 @@ export default function AdminUsers() {
                 <tr className="border-b bg-muted/30 text-left">
                   <th className="p-3 font-medium">Login</th>
                   <th className="p-3 font-medium">Role</th>
-                  <th className="p-3 font-medium">Status</th>
                   <th className="p-3 font-medium">Actions</th>
                 </tr>
               </thead>
@@ -77,26 +69,15 @@ export default function AdminUsers() {
                       </Badge>
                     </td>
                     <td className="p-3">
-                      <div className="flex items-center gap-2">
-                        <Switch checked={u.status === "active"} onCheckedChange={() => toggle(u.id)} />
-                        <span className={u.status === "active" ? "text-admin-success" : "text-destructive"}>{u.status}</span>
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <div className="flex items-center gap-2">
-                        <Select value={u.role} onValueChange={(v) => setRole(u.id, v as Role)}>
-                          <SelectTrigger className="h-8 w-36"><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="admin">Admin</SelectItem>
-                            <SelectItem value="marketer">Marketer</SelectItem>
-                            <SelectItem value="accountant">Accountant</SelectItem>
-                            <SelectItem value="user">User</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Button variant="outline" size="sm" onClick={() => toggle(u.id)}>
-                          {u.status === "active" ? "Block" : "Activate"}
-                        </Button>
-                      </div>
+                      <Select value={u.role} onValueChange={(v) => setRole(u.id, v as Role)}>
+                        <SelectTrigger className="h-8 w-36"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="marketer">Marketer</SelectItem>
+                          <SelectItem value="accountant">Accountant</SelectItem>
+                          <SelectItem value="user">User</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </td>
                   </tr>
                 ))}

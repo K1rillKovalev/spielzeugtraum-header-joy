@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Minus, AlertTriangle } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,24 +32,9 @@ export default function AdminInventory() {
     toast({ title: `Stock ${v > 0 ? "added" : "written-off"}` });
   };
 
-  const totalOrders = 32; // demo current daily orders
-  const crmThreshold = 50;
-
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-display font-bold">Inventory Management</h1>
-
-      <Card className="border-none shadow-md bg-admin-card">
-        <CardContent className="p-5 flex items-center gap-4">
-          <AlertTriangle className="h-8 w-8 text-admin-warning shrink-0" />
-          <div className="text-sm">
-            <p className="font-semibold">Today's orders: {totalOrders} / {crmThreshold}</p>
-            <p className="text-muted-foreground">
-              When daily orders exceed {crmThreshold}, the system will recommend migrating to a licensed CRM.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
 
       <Card className="border-none shadow-md">
         <CardHeader className="pb-3"><CardTitle className="text-base font-display">Stock Levels</CardTitle></CardHeader>

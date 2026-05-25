@@ -19,7 +19,7 @@ export default function AdminSettings() {
     about: "Your trusted online toy shop since 2010.",
   });
   const [payments, setPayments] = useState({
-    paypal: true, klarna: true, card: true, sofort: false, applepay: false,
+    paypal: true, stripe: true,
   });
 
   return (
@@ -65,13 +65,9 @@ export default function AdminSettings() {
               {Object.entries(payments).map(([key, val]) => (
                 <div key={key} className="flex items-center justify-between py-2 border-b last:border-0">
                   <div>
-                    <p className="font-medium capitalize">{key === "applepay" ? "Apple Pay" : key === "paypal" ? "PayPal" : key}</p>
+                    <p className="font-medium">{key === "paypal" ? "PayPal" : "Stripe"}</p>
                     <p className="text-xs text-muted-foreground">
-                      {key === "paypal" ? "Pay via PayPal account or guest"
-                      : key === "klarna" ? "Buy now, pay later"
-                      : key === "card" ? "Credit & debit cards"
-                      : key === "sofort" ? "Direct bank transfer (DE/AT)"
-                      : "Apple Pay express checkout"}
+                      {key === "paypal" ? "Pay via PayPal account or guest" : "Credit & debit card processing"}
                     </p>
                   </div>
                   <Switch
