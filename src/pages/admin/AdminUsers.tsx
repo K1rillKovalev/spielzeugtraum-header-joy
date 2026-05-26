@@ -1,32 +1,33 @@
 import { useState } from "react";
-import { Search, Shield } from "lucide-react";
+import { Search, Shield, Lock, Unlock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
-type Role = "admin" | "marketer" | "accountant" | "user";
+type Role = "admin" | "marketer" | "accountant" | "customer";
 
-interface U { id: number; login: string; role: Role; }
+interface U { id: number; login: string; role: Role; blocked: boolean; }
 
 const initial: U[] = [
-  { id: 1, login: "admin@spielzeugtraum.de", role: "admin" },
-  { id: 2, login: "marketing@spielzeugtraum.de", role: "marketer" },
-  { id: 3, login: "finance@spielzeugtraum.de", role: "accountant" },
-  { id: 4, login: "anna@example.com", role: "user" },
-  { id: 5, login: "thomas@example.com", role: "user" },
-  { id: 6, login: "sarah@example.com", role: "user" },
-  { id: 7, login: "max@example.com", role: "user" },
+  { id: 1, login: "admin@spielzeugtraum.de", role: "admin", blocked: false },
+  { id: 2, login: "marketing@spielzeugtraum.de", role: "marketer", blocked: false },
+  { id: 3, login: "finance@spielzeugtraum.de", role: "accountant", blocked: false },
+  { id: 4, login: "anna@example.com", role: "customer", blocked: false },
+  { id: 5, login: "thomas@example.com", role: "customer", blocked: true },
+  { id: 6, login: "sarah@example.com", role: "customer", blocked: false },
+  { id: 7, login: "max@example.com", role: "customer", blocked: false },
 ];
 
 const roleColors: Record<Role, string> = {
   admin: "bg-accent/20 text-accent",
   marketer: "bg-admin-warning/20 text-admin-warning",
   accountant: "bg-admin-success/20 text-admin-success",
-  user: "bg-muted text-muted-foreground",
+  customer: "bg-muted text-muted-foreground",
 };
 
 export default function AdminUsers() {
@@ -39,6 +40,17 @@ export default function AdminUsers() {
   const setRole = (id: number, role: Role) => {
     setUsers((us) => us.map((u) => (u.id === id ? { ...u, role } : u)));
     toast({ title: "Role updated" });
+  };
+
+  const toggleBlock = (id: number) => {
+    setUsers((us) =>
+      us.map((u) => {
+        if (u.id !== id) return u;
+        const next = !u.blocked;
+        toast({ title: next ? "User blocked" : "User unblocked" });
+        return { ...u, blocked: next };
+      })
+    );
   };
 
   return (
@@ -57,11 +69,12 @@ export default function AdminUsers() {
                   <th className="p-3 font-medium">Login</th>
                   <th className="p-3 font-medium">Role</th>
                   <th className="p-3 font-medium">Actions</th>
+                  <th className="p-3 font-medium text-right">Block</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((u) => (
-                  <tr key={u.id} className="border-b last:border-0 hover:bg-muted/20">
+                  <tr key={u.id} className={`border-b last:border-0 hover:bg-muted/20 ${u.blocked ? "opacity-50" : ""}`}>
                     <td className="p-3 font-medium">{u.login}</td>
                     <td className="p-3">
                       <Badge className={`gap-1 capitalize ${roleColors[u.role]}`}>
@@ -75,9 +88,19 @@ export default function AdminUsers() {
                           <SelectItem value="admin">Admin</SelectItem>
                           <SelectItem value="marketer">Marketer</SelectItem>
                           <SelectItem value="accountant">Accountant</SelectItem>
-                          <SelectItem value="user">User</SelectItem>
+                          <SelectItem value="customer">Customer</SelectItem>
                         </SelectContent>
                       </Select>
+                    </td>
+                    <td className="p-3 text-right">
+                      <Button
+                        size="icon"
+                        variant={u.blocked ? "destructive" : "outline"}
+                        onClick={() => toggleBlock(u.id)}
+                        title={u.blocked ? "Unblock user" : "Block user"}
+                      >
+                        {u.blocked ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
+                      </Button>
                     </td>
                   </tr>
                 ))}
