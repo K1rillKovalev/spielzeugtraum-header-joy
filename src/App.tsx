@@ -10,7 +10,6 @@ import Account from "./pages/Account.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminCatalogue from "./pages/admin/AdminCatalogue";
@@ -38,7 +37,7 @@ const App = () => (
           <Route path="/account" element={<Account />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
+            <Route index element={<AdminStats />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="customers" element={<AdminCustomers />} />
             <Route path="catalogue" element={<AdminCatalogue />} />

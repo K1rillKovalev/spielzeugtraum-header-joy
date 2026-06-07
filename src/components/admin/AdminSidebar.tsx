@@ -1,5 +1,5 @@
 import {
-  LayoutDashboard, Users, UserSquare2, Package, ShoppingBag, Boxes,
+  Users, UserSquare2, Package, ShoppingBag, Boxes,
   Truck, Tags, Image, Mail, BarChart3, Settings,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
+  { title: "Statistics", url: "/admin", icon: BarChart3 },
   { title: "User Management", url: "/admin/users", icon: Users },
   { title: "Customers", url: "/admin/customers", icon: UserSquare2 },
   { title: "Catalogue", url: "/admin/catalogue", icon: Package },
@@ -20,7 +20,6 @@ const navItems = [
   { title: "Promotions", url: "/admin/promotions", icon: Tags },
   { title: "Content", url: "/admin/content", icon: Image },
   { title: "Inquiries", url: "/admin/inquiries", icon: Mail },
-  { title: "Statistics", url: "/admin/stats", icon: BarChart3 },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
