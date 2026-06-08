@@ -39,7 +39,7 @@ export default function Account() {
     billing: "Spielstraße 12, 10115 Berlin, Germany",
   });
 
-  const [card, setCard] = useState({ number: "4242 4242 4242 4242", exp: "08/28", cvv: "123" });
+  const [card, setCard] = useState({ number: "4242 4242 4242 4242" });
   const [showCard, setShowCard] = useState(false);
   const [editingCard, setEditingCard] = useState(false);
   const [cardDraft, setCardDraft] = useState(card);
