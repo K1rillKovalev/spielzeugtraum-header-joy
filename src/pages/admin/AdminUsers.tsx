@@ -1,22 +1,29 @@
 import { useState } from "react";
-import { Search, Shield, Lock, Unlock } from "lucide-react";
+import { Search, Shield, Lock, Unlock, Plus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
-type Role = "admin" | "marketer" | "accountant" | "customer";
+type Role = "superadmin" | "content manager" | "moderator" | "accountant" | "customer";
+
+const ROLES: Role[] = ["superadmin", "content manager", "moderator", "accountant", "customer"];
 
 interface U { id: number; login: string; role: Role; blocked: boolean; }
 
 const initial: U[] = [
-  { id: 1, login: "admin@spielzeugtraum.de", role: "admin", blocked: false },
-  { id: 2, login: "marketing@spielzeugtraum.de", role: "marketer", blocked: false },
+  { id: 1, login: "admin@spielzeugtraum.de", role: "superadmin", blocked: false },
+  { id: 2, login: "marketing@spielzeugtraum.de", role: "content manager", blocked: false },
   { id: 3, login: "finance@spielzeugtraum.de", role: "accountant", blocked: false },
+  { id: 8, login: "mod@spielzeugtraum.de", role: "moderator", blocked: false },
   { id: 4, login: "anna@example.com", role: "customer", blocked: false },
   { id: 5, login: "thomas@example.com", role: "customer", blocked: true },
   { id: 6, login: "sarah@example.com", role: "customer", blocked: false },
@@ -24,8 +31,9 @@ const initial: U[] = [
 ];
 
 const roleColors: Record<Role, string> = {
-  admin: "bg-accent/20 text-accent",
-  marketer: "bg-admin-warning/20 text-admin-warning",
+  superadmin: "bg-accent/20 text-accent",
+  "content manager": "bg-admin-warning/20 text-admin-warning",
+  moderator: "bg-primary/20 text-primary",
   accountant: "bg-admin-success/20 text-admin-success",
   customer: "bg-muted text-muted-foreground",
 };
@@ -33,6 +41,9 @@ const roleColors: Record<Role, string> = {
 export default function AdminUsers() {
   const [users, setUsers] = useState<U[]>(initial);
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [newRole, setNewRole] = useState<Role>("customer");
   const { toast } = useToast();
 
   const filtered = users.filter((u) => u.login.toLowerCase().includes(search.toLowerCase()));
@@ -53,9 +64,59 @@ export default function AdminUsers() {
     );
   };
 
+  const addUser = () => {
+    const email = newEmail.trim();
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      toast({ title: "Invalid email", variant: "destructive" });
+      return;
+    }
+    setUsers((us) => [...us, { id: Date.now(), login: email, role: newRole, blocked: false }]);
+    toast({ title: "User added" });
+    setNewEmail("");
+    setNewRole("customer");
+    setOpen(false);
+  };
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-display font-bold">User Management</h1>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <h1 className="text-2xl font-display font-bold">User Management</h1>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-1"><Plus className="h-4 w-4" />New user</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Add new user</DialogTitle></DialogHeader>
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label htmlFor="new-email">Employee's e-mail</Label>
+                <Input
+                  id="new-email"
+                  type="email"
+                  placeholder="employee@spielzeugtraum.de"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Role</Label>
+                <Select value={newRole} onValueChange={(v) => setNewRole(v as Role)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {ROLES.map((r) => (
+                      <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button onClick={addUser}>Add user</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
       <div className="relative max-w-sm">
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input placeholder="Search by login..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -78,17 +139,16 @@ export default function AdminUsers() {
                     <td className="p-3 font-medium">{u.login}</td>
                     <td className="p-3">
                       <Badge className={`gap-1 capitalize ${roleColors[u.role]}`}>
-                        {u.role === "admin" && <Shield className="h-3 w-3" />}{u.role}
+                        {u.role === "superadmin" && <Shield className="h-3 w-3" />}{u.role}
                       </Badge>
                     </td>
                     <td className="p-3">
                       <Select value={u.role} onValueChange={(v) => setRole(u.id, v as Role)}>
-                        <SelectTrigger className="h-8 w-36"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="h-8 w-44"><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="marketer">Marketer</SelectItem>
-                          <SelectItem value="accountant">Accountant</SelectItem>
-                          <SelectItem value="customer">Customer</SelectItem>
+                          {ROLES.map((r) => (
+                            <SelectItem key={r} value={r} className="capitalize">{r}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </td>
