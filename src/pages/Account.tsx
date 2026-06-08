@@ -39,7 +39,7 @@ export default function Account() {
     billing: "Spielstraße 12, 10115 Berlin, Germany",
   });
 
-  const [card, setCard] = useState({ number: "4242 4242 4242 4242", exp: "08/28", cvv: "123" });
+  const [card, setCard] = useState({ number: "4242 4242 4242 4242" });
   const [showCard, setShowCard] = useState(false);
   const [editingCard, setEditingCard] = useState(false);
   const [cardDraft, setCardDraft] = useState(card);
@@ -197,10 +197,6 @@ export default function Account() {
                     <p className="font-mono tracking-wider text-lg">
                       {showCard ? card.number : maskCard(card.number)}
                     </p>
-                    <div className="flex gap-6 text-sm text-muted-foreground">
-                      <span>Exp: {showCard ? card.exp : "••/••"}</span>
-                      <span>CVV: {showCard ? card.cvv : "•••"}</span>
-                    </div>
                     <Button
                       variant="outline"
                       size="sm"
@@ -219,26 +215,6 @@ export default function Account() {
                         onChange={(e) => setCardDraft({ ...cardDraft, number: e.target.value })}
                         maxLength={19}
                       />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <Label>Expiry</Label>
-                        <Input
-                          value={cardDraft.exp}
-                          onChange={(e) => setCardDraft({ ...cardDraft, exp: e.target.value })}
-                          placeholder="MM/YY"
-                          maxLength={5}
-                        />
-                      </div>
-                      <div>
-                        <Label>CVV</Label>
-                        <Input
-                          type="password"
-                          value={cardDraft.cvv}
-                          onChange={(e) => setCardDraft({ ...cardDraft, cvv: e.target.value })}
-                          maxLength={4}
-                        />
-                      </div>
                     </div>
                     <div className="flex gap-2">
                       <Button onClick={handleCardSave} className="bg-[#EE4C7C] hover:bg-[#d8406d] text-white rounded-full">
