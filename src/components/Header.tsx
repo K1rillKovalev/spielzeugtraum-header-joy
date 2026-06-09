@@ -84,7 +84,7 @@ const Header = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4, duration: 0.4 }}
         >
-          <Button variant="cta" size="lg" className="font-display text-lg">
+          <Button variant="cta" size="lg" className="font-display text-lg" onClick={() => navigate("/catalogue")}>
             🎁 Shop Now
           </Button>
         </motion.div>
