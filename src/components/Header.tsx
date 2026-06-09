@@ -22,6 +22,7 @@ const GermanFlag = () => (
 );
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <header className="relative overflow-hidden bg-hero-bg">
       {/* Floating toy icons */}
