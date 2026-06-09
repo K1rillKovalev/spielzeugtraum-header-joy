@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Search, Star, Puzzle, Gamepad2, Baby, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
