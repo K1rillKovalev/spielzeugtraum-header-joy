@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Search, Star, Puzzle, Gamepad2, Baby, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -21,6 +22,7 @@ const GermanFlag = () => (
 );
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <header className="relative overflow-hidden bg-hero-bg">
       {/* Floating toy icons */}
@@ -82,7 +84,7 @@ const Header = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4, duration: 0.4 }}
         >
-          <Button variant="cta" size="lg" className="font-display text-lg">
+          <Button variant="cta" size="lg" className="font-display text-lg" onClick={() => navigate("/catalogue")}>
             🎁 Shop Now
           </Button>
         </motion.div>
