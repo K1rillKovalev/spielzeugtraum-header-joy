@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUpDown, Download } from "lucide-react";
+import * as XLSX from "xlsx";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 
 interface C {
@@ -18,12 +19,14 @@ interface C {
 const customers: C[] = [
   { id: 1, name: "Anna Müller", email: "anna@example.com", phone: "+49 170 1234567", registered: "2024-03-12", totalSpent: 845.50, lastPurchase: "2026-05-18", orders: 7 },
   { id: 2, name: "Thomas Klein", email: "thomas@example.com", phone: "+49 171 2345678", registered: "2024-09-04", totalSpent: 412.20, lastPurchase: "2026-04-30", orders: 4 },
-  { id: 3, name: "Sarah Lang", email: "sarah@example.com", phone: "+49 152 3456789", registered: "2025-01-20", totalSpent: 1234.99, lastPurchase: "2026-05-15", orders: 11 },
-  { id: 4, name: "Max Bauer", email: "max@example.com", phone: "+49 160 4567890", registered: "2023-11-08", totalSpent: 2189.00, lastPurchase: "2026-05-20", orders: 18 },
+  { id: 3, name: "–", email: "sarah@example.com", phone: "+49 152 3456789", registered: "2025-01-20", totalSpent: 1234.99, lastPurchase: "2026-05-15", orders: 11 },
+  { id: 4, name: "Max Bauer", email: "max@example.com", phone: "–", registered: "2023-11-08", totalSpent: 2189.00, lastPurchase: "2026-05-20", orders: 18 },
   { id: 5, name: "Julia Hoffmann", email: "julia@example.com", phone: "+49 175 5678901", registered: "2025-06-15", totalSpent: 327.80, lastPurchase: "2026-03-22", orders: 3 },
 ];
 
-type SortKey = "recency" | "frequency" | "money" | null;
+type SortMetric = "recency" | "frequency" | "money";
+type SortDir = "asc" | "desc";
+type Sort = { metric: SortMetric; dir: SortDir } | null;
 
 const TODAY = new Date("2026-06-09");
 const daysSince = (d: string) => Math.floor((TODAY.getTime() - new Date(d).getTime()) / 86400000);
@@ -32,7 +35,7 @@ const STAT = "#5D001E";
 
 export default function AdminCustomers() {
   const [q, setQ] = useState("");
-  const [sortBy, setSortBy] = useState<SortKey>(null);
+  const [sort, setSort] = useState<Sort>(null);
   const [selected, setSelected] = useState<C | null>(null);
 
   const filtered = useMemo(() => {
@@ -40,23 +43,40 @@ export default function AdminCustomers() {
     let list = customers.filter((c) =>
       c.name.toLowerCase().includes(s) || c.email.toLowerCase().includes(s) || c.phone.includes(s)
     );
-    if (sortBy === "recency") list = [...list].sort((a, b) => daysSince(a.lastPurchase) - daysSince(b.lastPurchase));
-    if (sortBy === "frequency") list = [...list].sort((a, b) => a.orders - b.orders);
-    if (sortBy === "money") list = [...list].sort((a, b) => a.totalSpent - b.totalSpent);
+    if (sort) {
+      const val = (c: C) => sort.metric === "recency" ? daysSince(c.lastPurchase) : sort.metric === "frequency" ? c.orders : c.totalSpent;
+      list = [...list].sort((a, b) => sort.dir === "asc" ? val(a) - val(b) : val(b) - val(a));
+    }
     return list;
-  }, [q, sortBy]);
+  }, [q, sort]);
 
-  const sortLabel: Record<Exclude<SortKey, null>, string> = {
+  const sortLabel: Record<SortMetric, string> = {
     recency: "Recency",
     frequency: "Frequency",
     money: "Money spent",
   };
 
   const sortCell = (c: C) => {
-    if (sortBy === "recency") return `${daysSince(c.lastPurchase)} days`;
-    if (sortBy === "frequency") return `${c.orders} orders`;
-    if (sortBy === "money") return `€${c.totalSpent.toFixed(2)}`;
-    return "";
+    if (!sort) return "";
+    if (sort.metric === "recency") return `${daysSince(c.lastPurchase)} days`;
+    if (sort.metric === "frequency") return `${c.orders} orders`;
+    return `€${c.totalSpent.toFixed(2)}`;
+  };
+
+  const exportXlsx = () => {
+    const rows = customers.map((c) => ({
+      Email: c.email,
+      Name: c.name,
+      Phone: c.phone,
+      Registered: c.registered,
+      "Recency (days)": daysSince(c.lastPurchase),
+      "Frequency (orders)": c.orders,
+      "Money spent (€)": c.totalSpent,
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Customers");
+    XLSX.writeFile(wb, "customers.xlsx");
   };
 
   return (
@@ -71,16 +91,25 @@ export default function AdminCustomers() {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="gap-2">
               <ArrowUpDown className="h-4 w-4" />
-              {sortBy ? `Sort: ${sortLabel[sortBy]}` : "Sort by..."}
+              {sort ? `Sort: ${sortLabel[sort.metric]} ${sort.dir === "asc" ? "↑" : "↓"}` : "Sort by..."}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setSortBy("recency")}>Recency (asc)</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setSortBy("frequency")}>Frequency (asc)</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setSortBy("money")}>Money spent (asc)</DropdownMenuItem>
-            {sortBy && <DropdownMenuItem onClick={() => setSortBy(null)}>Clear sort</DropdownMenuItem>}
+            <DropdownMenuLabel>Ascending</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => setSort({ metric: "recency", dir: "asc" })}>Recency ↑</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSort({ metric: "frequency", dir: "asc" })}>Frequency ↑</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSort({ metric: "money", dir: "asc" })}>Money spent ↑</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Descending</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => setSort({ metric: "recency", dir: "desc" })}>Recency ↓</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSort({ metric: "frequency", dir: "desc" })}>Frequency ↓</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSort({ metric: "money", dir: "desc" })}>Money spent ↓</DropdownMenuItem>
+            {sort && <><DropdownMenuSeparator /><DropdownMenuItem onClick={() => setSort(null)}>Clear sort</DropdownMenuItem></>}
           </DropdownMenuContent>
         </DropdownMenu>
+        <Button variant="outline" className="gap-2" onClick={exportXlsx}>
+          <Download className="h-4 w-4" /> Export XLSX
+        </Button>
       </div>
       <Card className="border-none shadow-md">
         <CardContent className="p-0">
@@ -88,16 +117,16 @@ export default function AdminCustomers() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/30 text-left">
-                  <th className="p-3 font-medium">Name</th>
                   <th className="p-3 font-medium">Email</th>
+                  <th className="p-3 font-medium">Name</th>
                   <th className="p-3 font-medium">Phone</th>
                   <th className="p-3 font-medium">Registered</th>
-                  {sortBy && (
+                  {sort && (
                     <th
                       className="p-3 font-bold border-l-2"
                       style={{ background: "#5D001E", color: "#fff", borderColor: "#5D001E" }}
                     >
-                      {sortLabel[sortBy]}
+                      {sortLabel[sort.metric]} {sort.dir === "asc" ? "↑" : "↓"}
                     </th>
                   )}
                 </tr>
@@ -109,11 +138,11 @@ export default function AdminCustomers() {
                     className="border-b last:border-0 hover:bg-muted/20 cursor-pointer"
                     onClick={() => setSelected(c)}
                   >
-                    <td className="p-3 font-medium">{c.name}</td>
                     <td className="p-3 text-muted-foreground">{c.email}</td>
+                    <td className="p-3 font-medium">{c.name}</td>
                     <td className="p-3 text-muted-foreground">{c.phone}</td>
                     <td className="p-3">{c.registered}</td>
-                    {sortBy && (
+                    {sort && (
                       <td
                         className="p-3 font-semibold border-l-2"
                         style={{ background: "rgba(93,0,30,0.08)", color: STAT, borderColor: "#5D001E" }}
