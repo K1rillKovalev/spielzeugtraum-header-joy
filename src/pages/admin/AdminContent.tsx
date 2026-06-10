@@ -95,9 +95,10 @@ const initialBanners: Banner[] = [
 ];
 
 const initialPages: Page[] = [
-  { id: 1, slug: "about", title: "About Us", content: "We are SpielzeugTraum, your trusted toy shop since 2010..." },
-  { id: 2, slug: "shipping", title: "Shipping & Returns", content: "Free shipping on orders over €50..." },
-  { id: 3, slug: "privacy", title: "Privacy Policy", content: "We respect your privacy..." },
+  { id: 1, slug: "about", title: "About Us", content: "SpielzeugTraum was born from a simple belief: every child deserves a tiny universe where imagination is the only law..." },
+  { id: 2, slug: "contact", title: "Contact Us", content: "Behind every order is a small team of toy-lovers ready to chat about anything from missing puzzle pieces to which dollhouse best fits a rainy Sunday..." },
+  { id: 3, slug: "shipping", title: "Shipping & Returns", content: "Every parcel from SpielzeugTraum begins its journey wrapped in recycled paper, a paper-star sticker, and a wink of fairy dust..." },
+  { id: 4, slug: "privacy", title: "Privacy Policy", content: "At SpielzeugTraum we treat your personal information the way we treat a freshly painted rocking horse — with great care..." },
 ];
 
 export default function AdminContent() {
