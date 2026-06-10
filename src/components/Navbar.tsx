@@ -92,6 +92,18 @@ const Navbar = () => {
                 Catalogue
               </button>
             </li>
+            <li>
+              <button
+                onClick={() => handleClick("About Us", "/about")}
+                className={`px-3 py-1.5 rounded-full text-sm font-semibold font-body transition-all duration-200 ${
+                  active === "About Us"
+                    ? "text-[hsl(var(--nav-active))] bg-card/40"
+                    : "text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20"
+                }`}
+              >
+                About Us
+              </button>
+            </li>
           </ul>
 
           {/* Right icons */}
@@ -162,6 +174,18 @@ const Navbar = () => {
                   }`}
                 >
                   Catalogue
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleClick("About Us", "/about")}
+                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold font-body transition-all duration-200 ${
+                    active === "About Us"
+                      ? "text-[hsl(var(--nav-active))] bg-card/40"
+                      : "text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20"
+                  }`}
+                >
+                  About Us
                 </button>
               </li>
             </ul>

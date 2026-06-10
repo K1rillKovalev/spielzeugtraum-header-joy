@@ -4,22 +4,38 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
-const linkColumns = [
+const linkColumns: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Links",
-    links: ["About Us", "Contact", "Shipping & Returns", "Privacy Policy"],
+    links: [
+      { label: "About Us", href: "/about" },
+      { label: "Contact", href: "/contact" },
+      { label: "Shipping & Returns", href: "/shipping" },
+      { label: "Privacy Policy", href: "/privacy" },
+    ],
   },
   {
     title: "Categories",
-    links: ["Dolls", "Cars", "Educational Toys", "Wooden Toys", "Board Games"],
+    links: [
+      { label: "Dolls", href: "#" },
+      { label: "Cars", href: "#" },
+      { label: "Educational Toys", href: "#" },
+      { label: "Wooden Toys", href: "#" },
+      { label: "Board Games", href: "#" },
+    ],
   },
   {
     title: "Support",
-    links: ["Help", "FAQ", "Imprint", "Terms & Conditions"],
+    links: [
+      { label: "Help", href: "#" },
+      { label: "FAQ", href: "#" },
+      { label: "Imprint", href: "#" },
+      { label: "Terms & Conditions", href: "#" },
+    ],
   },
 ];
 
-const MobileColumn = ({ title, links }: { title: string; links: string[] }) => {
+const MobileColumn = ({ title, links }: { title: string; links: { label: string; href: string }[] }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-[hsl(var(--cta)/.2)] md:border-none">
@@ -44,9 +60,9 @@ const MobileColumn = ({ title, links }: { title: string; links: string[] }) => {
             transition={{ duration: 0.2 }}
           >
             {links.map((link) => (
-              <li key={link}>
-                <a href="#" className="font-body text-sm text-[hsl(var(--hero-bg)/.7)] hover:text-cta transition-colors duration-200">
-                  {link}
+              <li key={link.label}>
+                <a href={link.href} className="font-body text-sm text-[hsl(var(--hero-bg)/.7)] hover:text-cta transition-colors duration-200">
+                  {link.label}
                 </a>
               </li>
             ))}
@@ -55,9 +71,9 @@ const MobileColumn = ({ title, links }: { title: string; links: string[] }) => {
       </AnimatePresence>
       <ul className="hidden md:flex flex-col gap-2">
         {links.map((link) => (
-          <li key={link}>
-            <a href="#" className="font-body text-sm text-[hsl(var(--hero-bg)/.7)] hover:text-cta transition-colors duration-200">
-              {link}
+          <li key={link.label}>
+            <a href={link.href} className="font-body text-sm text-[hsl(var(--hero-bg)/.7)] hover:text-cta transition-colors duration-200">
+              {link.label}
             </a>
           </li>
         ))}
