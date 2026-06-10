@@ -35,7 +35,7 @@ const linkColumns: { title: string; links: { label: string; href: string }[] }[]
   },
 ];
 
-const MobileColumn = ({ title, links }: { title: string; links: string[] }) => {
+const MobileColumn = ({ title, links }: { title: string; links: { label: string; href: string }[] }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-[hsl(var(--cta)/.2)] md:border-none">
@@ -60,9 +60,9 @@ const MobileColumn = ({ title, links }: { title: string; links: string[] }) => {
             transition={{ duration: 0.2 }}
           >
             {links.map((link) => (
-              <li key={link}>
-                <a href="#" className="font-body text-sm text-[hsl(var(--hero-bg)/.7)] hover:text-cta transition-colors duration-200">
-                  {link}
+              <li key={link.label}>
+                <a href={link.href} className="font-body text-sm text-[hsl(var(--hero-bg)/.7)] hover:text-cta transition-colors duration-200">
+                  {link.label}
                 </a>
               </li>
             ))}
@@ -71,9 +71,9 @@ const MobileColumn = ({ title, links }: { title: string; links: string[] }) => {
       </AnimatePresence>
       <ul className="hidden md:flex flex-col gap-2">
         {links.map((link) => (
-          <li key={link}>
-            <a href="#" className="font-body text-sm text-[hsl(var(--hero-bg)/.7)] hover:text-cta transition-colors duration-200">
-              {link}
+          <li key={link.label}>
+            <a href={link.href} className="font-body text-sm text-[hsl(var(--hero-bg)/.7)] hover:text-cta transition-colors duration-200">
+              {link.label}
             </a>
           </li>
         ))}
