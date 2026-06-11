@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, MapPin, CreditCard, Lock, Trash2, Package, Shield, Eye, EyeOff, Save } from "lucide-react";
+import { User, Mail, Phone, MapPin, CreditCard, Lock, Trash2, Package, Shield, Eye, EyeOff, Save, Gift, Copy, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -48,6 +48,17 @@ export default function Account() {
   const [pwdOpen, setPwdOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
+
+  const referralLink = `https://spielzeugtraum.de/?ref=anna-m-4821`;
+  const buttons = 24;
+  const handleCopyRef = async () => {
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      toast({ title: "Link copied!", description: "Share it with friends to earn buttons." });
+    } catch {
+      toast({ title: "Couldn't copy", variant: "destructive" });
+    }
+  };
 
   const handleProfileSave = () => {
     toast({ title: "Profile updated", description: "Your personal information has been saved." });
@@ -230,6 +241,59 @@ export default function Account() {
                 <p className="text-[11px] text-muted-foreground flex items-start gap-1.5 pt-1">
                   <Shield className="w-3 h-3 mt-0.5 flex-shrink-0" />
                   Card data is encrypted at rest and in transit. Full numbers are never displayed by default and we comply with PCI DSS standards.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Referral */}
+          <Card className="rounded-3xl shadow-md border-none overflow-hidden">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 font-display text-xl text-[#5D001E]">
+                <Gift className="w-5 h-5" /> Referral Program
+                <span className="ml-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-wide bg-[#EE4C7C]/15 text-[#EE4C7C] px-2 py-0.5 rounded-full font-semibold">
+                  <Sparkles className="w-3 h-3" /> Earn buttons
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {/* Rules */}
+              <div className="rounded-2xl bg-[#FFF4F7] p-4 space-y-2">
+                <p className="text-sm font-semibold text-[#5D001E]">How it works</p>
+                <ul className="text-sm text-foreground/80 space-y-1.5 list-disc list-inside">
+                  <li>Share your personal referral link with friends.</li>
+                  <li>When someone registers through your link, you earn <strong>10% cashback</strong> on every purchase they make — paid out in <strong>buttons</strong>.</li>
+                  <li><strong>1 button = €1</strong>, stored on your account.</li>
+                  <li>You can use buttons to cover <strong>up to 50% of any order's total</strong>.</li>
+                </ul>
+              </div>
+
+              {/* Buttons balance */}
+              <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-[#EE4C7C] to-[#d8406d] text-white p-5 shadow-md">
+                <div>
+                  <p className="text-xs uppercase tracking-wider opacity-90">Your balance</p>
+                  <p className="text-3xl font-display font-bold mt-1">{buttons} buttons</p>
+                  <p className="text-xs opacity-90 mt-0.5">≈ €{buttons.toFixed(2)} to spend</p>
+                </div>
+                <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                  <Gift className="w-8 h-8" />
+                </div>
+              </div>
+
+              {/* Referral link */}
+              <div className="space-y-2">
+                <Label>Your referral link</Label>
+                <div className="flex gap-2">
+                  <Input value={referralLink} readOnly className="bg-muted/40 font-mono text-sm" />
+                  <Button
+                    onClick={handleCopyRef}
+                    className="bg-[#EE4C7C] hover:bg-[#d8406d] text-white rounded-full gap-2 shrink-0"
+                  >
+                    <Copy className="w-4 h-4" /> Copy
+                  </Button>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  Buttons are credited automatically after a referred friend's order ships.
                 </p>
               </div>
             </CardContent>
