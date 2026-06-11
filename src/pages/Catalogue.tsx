@@ -212,17 +212,29 @@ const Catalogue = () => {
               {/* Price */}
               <div className="mb-6">
                 <Label className="font-display font-bold text-sm mb-3 block">Price</Label>
-                <Slider
-                  min={PRICE_MIN}
-                  max={PRICE_MAX}
-                  step={1}
-                  value={price}
-                  onValueChange={(v) => setPrice([v[0], v[1]] as [number, number])}
-                  className="my-3"
-                />
-                <div className="flex justify-between text-xs font-body text-muted-foreground">
-                  <span>€{price[0]}</span>
-                  <span>€{price[1]}</span>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="font-body text-xs text-muted-foreground mb-1 block">Min Price</Label>
+                    <Slider
+                      min={PRICE_MIN}
+                      max={PRICE_MAX}
+                      step={1}
+                      value={[price[0]]}
+                      onValueChange={(v) => setPrice([Math.min(v[0], price[1]), price[1]])}
+                    />
+                    <span className="text-xs font-body text-muted-foreground">€{price[0]}</span>
+                  </div>
+                  <div>
+                    <Label className="font-body text-xs text-muted-foreground mb-1 block">Max Price</Label>
+                    <Slider
+                      min={PRICE_MIN}
+                      max={PRICE_MAX}
+                      step={1}
+                      value={[price[1]]}
+                      onValueChange={(v) => setPrice([price[0], Math.max(v[0], price[0])])}
+                    />
+                    <span className="text-xs font-body text-muted-foreground">€{price[1]}</span>
+                  </div>
                 </div>
               </div>
 
