@@ -1,6 +1,13 @@
-import { Search, ShoppingCart } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Search, ShoppingCart, SlidersHorizontal, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import {
+  Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter,
+} from "@/components/ui/sheet";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -11,27 +18,47 @@ import productTeddy from "@/assets/product-teddy.jpg";
 import productBlocks from "@/assets/product-blocks.jpg";
 import productTrain from "@/assets/product-train.jpg";
 
-const products = [
-  { name: "Turbo Race Car", price: "€19.99", oldPrice: "€24.99", stock: 24, image: productCar, badge: "Top Deal" },
-  { name: "Rag Doll Lina", price: "€24.99", oldPrice: null, stock: 12, image: productDoll, badge: "Bestseller" },
-  { name: "Animal Puzzle Set", price: "€14.99", oldPrice: "€18.99", stock: 37, image: productPuzzle, badge: "In Stock" },
-  { name: "Teddy Bear Bruno", price: "€29.99", oldPrice: null, stock: 8, image: productTeddy, badge: "In Stock" },
-  { name: "Colorful Building Blocks", price: "€22.99", oldPrice: "€27.99", stock: 41, image: productBlocks, badge: "Top Deal" },
-  { name: "Wooden Train", price: "€34.99", oldPrice: "€39.99", stock: 15, image: productTrain, badge: "In Stock" },
-  { name: "Mini Sports Car", price: "€16.99", oldPrice: null, stock: 22, image: productCar, badge: "In Stock" },
-  { name: "Princess Doll Mia", price: "€27.99", oldPrice: "€32.99", stock: 9, image: productDoll, badge: "Bestseller" },
-  { name: "Learning Puzzle Pro", price: "€19.99", oldPrice: null, stock: 30, image: productPuzzle, badge: "In Stock" },
+type AgeGroup = "0-3" | "4-7" | "8+";
+
+interface Product {
+  name: string;
+  price: number;
+  oldPrice: number | null;
+  stock: number;
+  image: string;
+  badge: string;
+  category: string;
+  brand: string;
+  age: AgeGroup;
+}
+
+const products: Product[] = [
+  { name: "Turbo Race Car", price: 19.99, oldPrice: 24.99, stock: 24, image: productCar, badge: "Top Deal", category: "Cars", brand: "SpeedyToys", age: "4-7" },
+  { name: "Rag Doll Lina", price: 24.99, oldPrice: null, stock: 12, image: productDoll, badge: "Bestseller", category: "Dolls", brand: "DreamPlay", age: "4-7" },
+  { name: "Animal Puzzle Set", price: 14.99, oldPrice: 18.99, stock: 37, image: productPuzzle, badge: "In Stock", category: "Educational Toys", brand: "LearnFun", age: "4-7" },
+  { name: "Teddy Bear Bruno", price: 29.99, oldPrice: null, stock: 8, image: productTeddy, badge: "In Stock", category: "Plush", brand: "CuddleCo", age: "0-3" },
+  { name: "Colorful Building Blocks", price: 22.99, oldPrice: 27.99, stock: 41, image: productBlocks, badge: "Top Deal", category: "Educational Toys", brand: "BrickWorld", age: "0-3" },
+  { name: "Wooden Train", price: 34.99, oldPrice: 39.99, stock: 15, image: productTrain, badge: "In Stock", category: "Wooden Toys", brand: "EcoToys", age: "4-7" },
+  { name: "Mini Sports Car", price: 16.99, oldPrice: null, stock: 22, image: productCar, badge: "In Stock", category: "Cars", brand: "SpeedyToys", age: "8+" },
+  { name: "Princess Doll Mia", price: 27.99, oldPrice: 32.99, stock: 0, image: productDoll, badge: "Bestseller", category: "Dolls", brand: "DreamPlay", age: "4-7" },
+  { name: "Learning Puzzle Pro", price: 19.99, oldPrice: null, stock: 30, image: productPuzzle, badge: "In Stock", category: "Board Games", brand: "LearnFun", age: "8+" },
 ];
 
-const categories = ["Dolls", "Cars", "Educational Toys", "Wooden Toys", "Board Games"];
+const allCategories = ["Dolls", "Cars", "Educational Toys", "Wooden Toys", "Board Games", "Plush"];
+const allBrands = ["SpeedyToys", "DreamPlay", "LearnFun", "CuddleCo", "BrickWorld", "EcoToys"];
+const allAvailability = ["In Stock", "Out of Stock"] as const;
+const allAges: AgeGroup[] = ["0-3", "4-7", "8+"];
+const PRICE_MIN = 0;
+const PRICE_MAX = 50;
 
-const ProductCard = ({ product, index }: { product: typeof products[0]; index: number }) => {
+const ProductCard = ({ product, index }: { product: Product; index: number }) => {
   const badgeColor =
     product.badge === "Bestseller"
       ? "bg-rating text-foreground"
       : product.badge === "Top Deal"
       ? "bg-accent text-accent-foreground"
       : "bg-cta text-cta-foreground";
+  const outOfStock = product.stock === 0;
 
   return (
     <motion.div
@@ -45,7 +72,7 @@ const ProductCard = ({ product, index }: { product: typeof products[0]; index: n
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+          className={`w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-500 ${outOfStock ? "opacity-60" : ""}`}
           loading="lazy"
           width={600}
           height={600}
@@ -53,27 +80,34 @@ const ProductCard = ({ product, index }: { product: typeof products[0]; index: n
         <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold font-body ${badgeColor}`}>
           {product.badge}
         </span>
-        <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300 flex items-center justify-center">
-          <Button
-            variant="cta"
-            size="sm"
-            className="opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300"
-          >
-            <ShoppingCart size={16} />
-            Add to Cart
-          </Button>
-        </div>
+        {outOfStock && (
+          <span className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold font-body bg-foreground/80 text-background">
+            Out of Stock
+          </span>
+        )}
+        {!outOfStock && (
+          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300 flex items-center justify-center">
+            <Button
+              variant="cta"
+              size="sm"
+              className="opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300"
+            >
+              <ShoppingCart size={16} />
+              Add to Cart
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="p-4">
         <h3 className="font-display text-base font-bold text-foreground mb-1 truncate">{product.name}</h3>
         <p className="font-body text-xs text-muted-foreground mb-2">
-          In Stock: <span className="font-bold text-foreground">{product.stock}</span>
+          {product.brand} · Age {product.age}
         </p>
         <div className="flex items-center gap-2">
-          <span className="font-display text-lg font-extrabold text-cta">{product.price}</span>
+          <span className="font-display text-lg font-extrabold text-cta">€{product.price.toFixed(2)}</span>
           {product.oldPrice && (
-            <span className="font-body text-sm text-muted-foreground line-through">{product.oldPrice}</span>
+            <span className="font-body text-sm text-muted-foreground line-through">€{product.oldPrice.toFixed(2)}</span>
           )}
         </div>
       </div>
@@ -81,13 +115,58 @@ const ProductCard = ({ product, index }: { product: typeof products[0]; index: n
   );
 };
 
+const CheckboxList = ({
+  options, selected, onToggle,
+}: { options: readonly string[]; selected: string[]; onToggle: (v: string) => void }) => (
+  <div className="flex flex-col gap-2">
+    {options.map((opt) => (
+      <label key={opt} className="flex items-center gap-2 cursor-pointer font-body text-sm">
+        <Checkbox checked={selected.includes(opt)} onCheckedChange={() => onToggle(opt)} />
+        <span>{opt}</span>
+      </label>
+    ))}
+  </div>
+);
+
 const Catalogue = () => {
+  const [search, setSearch] = useState("");
+  const [price, setPrice] = useState<[number, number]>([PRICE_MIN, PRICE_MAX]);
+  const [cats, setCats] = useState<string[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
+  const [avail, setAvail] = useState<string[]>([]);
+  const [ages, setAges] = useState<string[]>([]);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const toggle = (setter: React.Dispatch<React.SetStateAction<string[]>>) => (v: string) =>
+    setter((prev) => (prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]));
+
+  const filtered = useMemo(() => {
+    return products.filter((p) => {
+      if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
+      if (p.price < price[0] || p.price > price[1]) return false;
+      if (cats.length && !cats.includes(p.category)) return false;
+      if (brands.length && !brands.includes(p.brand)) return false;
+      if (ages.length && !ages.includes(p.age)) return false;
+      if (avail.length) {
+        const status = p.stock > 0 ? "In Stock" : "Out of Stock";
+        if (!avail.includes(status)) return false;
+      }
+      return true;
+    });
+  }, [search, price, cats, brands, ages, avail]);
+
+  const activeExtraCount = brands.length + avail.length + ages.length;
+
+  const clearAll = () => {
+    setPrice([PRICE_MIN, PRICE_MAX]);
+    setCats([]); setBrands([]); setAvail([]); setAges([]);
+  };
+
   return (
     <div className="min-h-screen bg-body-bg">
       <Navbar />
 
       <main className="container mx-auto px-4 py-10">
-        {/* Page Title */}
         <motion.div
           className="text-center mb-8"
           initial={{ opacity: 0, y: -10 }}
@@ -98,7 +177,6 @@ const Catalogue = () => {
           <p className="font-body text-foreground/70 mt-1">Browse our full collection</p>
         </motion.div>
 
-        {/* Search bar */}
         <motion.div
           className="max-w-2xl mx-auto mb-10"
           initial={{ opacity: 0, y: 10 }}
@@ -109,36 +187,139 @@ const Catalogue = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
             <input
               type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search for toys..."
               className="w-full h-12 sm:h-14 pl-12 pr-4 rounded-full bg-card text-card-foreground shadow-lg border-2 border-transparent focus:border-cta focus:outline-none transition-all duration-300 font-body text-base placeholder:text-muted-foreground"
             />
           </div>
         </motion.div>
 
-        {/* Content: products + categories sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_280px] gap-6">
+          {/* Filters sidebar */}
+          <aside className="space-y-5">
+            <div className="bg-card rounded-2xl shadow-lg p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-display text-lg font-extrabold text-foreground">Filters</h2>
+                <button
+                  onClick={clearAll}
+                  className="font-body text-xs text-cta hover:underline"
+                >
+                  Clear all
+                </button>
+              </div>
+
+              {/* Price */}
+              <div className="mb-6">
+                <Label className="font-display font-bold text-sm mb-3 block">Price</Label>
+                <Slider
+                  min={PRICE_MIN}
+                  max={PRICE_MAX}
+                  step={1}
+                  value={price}
+                  onValueChange={(v) => setPrice([v[0], v[1]] as [number, number])}
+                  className="my-3"
+                />
+                <div className="flex justify-between text-xs font-body text-muted-foreground">
+                  <span>€{price[0]}</span>
+                  <span>€{price[1]}</span>
+                </div>
+              </div>
+
+              {/* Category */}
+              <div className="mb-4">
+                <Label className="font-display font-bold text-sm mb-3 block">Category</Label>
+                <CheckboxList options={allCategories} selected={cats} onToggle={toggle(setCats)} />
+              </div>
+
+              <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="w-full gap-2">
+                    <SlidersHorizontal size={16} />
+                    All filters
+                    {activeExtraCount > 0 && (
+                      <span className="ml-1 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-cta text-cta-foreground text-xs font-bold">
+                        {activeExtraCount}
+                      </span>
+                    )}
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
+                  <SheetHeader>
+                    <SheetTitle className="font-display">All filters</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6 space-y-6">
+                    <div>
+                      <Label className="font-display font-bold text-sm mb-3 block">Brand</Label>
+                      <CheckboxList options={allBrands} selected={brands} onToggle={toggle(setBrands)} />
+                    </div>
+                    <div>
+                      <Label className="font-display font-bold text-sm mb-3 block">Availability</Label>
+                      <CheckboxList options={allAvailability} selected={avail} onToggle={toggle(setAvail)} />
+                    </div>
+                    <div>
+                      <Label className="font-display font-bold text-sm mb-3 block">Age of the child</Label>
+                      <CheckboxList
+                        options={allAges.map((a) => `${a} years`)}
+                        selected={ages.map((a) => `${a} years`)}
+                        onToggle={(v) => toggle(setAges)(v.replace(" years", ""))}
+                      />
+                    </div>
+                  </div>
+                  <SheetFooter className="mt-6 flex-row gap-2 sm:justify-between">
+                    <Button variant="outline" onClick={() => { setBrands([]); setAvail([]); setAges([]); }}>
+                      Reset
+                    </Button>
+                    <Button onClick={() => setSheetOpen(false)} className="bg-cta hover:bg-cta/90 text-cta-foreground">
+                      Apply
+                    </Button>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </aside>
+
           {/* Products */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-            {products.map((product, i) => (
-              <ProductCard key={i} product={product} index={i} />
-            ))}
+          <div>
+            {filtered.length === 0 ? (
+              <div className="bg-card rounded-2xl p-12 text-center shadow-lg">
+                <p className="font-body text-muted-foreground">No toys match your filters.</p>
+                <Button onClick={clearAll} variant="outline" className="mt-4">
+                  <X size={16} className="mr-1" /> Clear filters
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                {filtered.map((product, i) => (
+                  <ProductCard key={`${product.name}-${i}`} product={product} index={i} />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Categories sidebar */}
-          <aside className="order-first lg:order-last">
+          <aside>
             <div
               className="rounded-2xl shadow-lg p-6 lg:sticky lg:top-24"
               style={{ backgroundColor: "#EE4C7C" }}
             >
               <h2 className="font-display text-2xl font-extrabold text-white mb-4">Categories</h2>
               <ul className="flex flex-col gap-2">
-                {categories.map((cat) => (
-                  <li key={cat}>
-                    <button className="w-full text-left px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/30 text-white font-body font-semibold text-sm transition-colors duration-150">
-                      {cat}
-                    </button>
-                  </li>
-                ))}
+                {allCategories.map((cat) => {
+                  const active = cats.includes(cat);
+                  return (
+                    <li key={cat}>
+                      <button
+                        onClick={() => toggle(setCats)(cat)}
+                        className={`w-full text-left px-4 py-2.5 rounded-xl font-body font-semibold text-sm transition-colors duration-150 ${
+                          active ? "bg-white text-[#EE4C7C]" : "bg-white/15 hover:bg-white/30 text-white"
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </aside>
