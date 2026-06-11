@@ -195,7 +195,7 @@ const Catalogue = () => {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_280px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
           {/* Filters sidebar */}
           <aside className="space-y-5">
             <div className="bg-card rounded-2xl shadow-lg p-5">
@@ -212,17 +212,29 @@ const Catalogue = () => {
               {/* Price */}
               <div className="mb-6">
                 <Label className="font-display font-bold text-sm mb-3 block">Price</Label>
-                <Slider
-                  min={PRICE_MIN}
-                  max={PRICE_MAX}
-                  step={1}
-                  value={price}
-                  onValueChange={(v) => setPrice([v[0], v[1]] as [number, number])}
-                  className="my-3"
-                />
-                <div className="flex justify-between text-xs font-body text-muted-foreground">
-                  <span>€{price[0]}</span>
-                  <span>€{price[1]}</span>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="font-body text-xs text-muted-foreground mb-1 block">Min Price</Label>
+                    <Slider
+                      min={PRICE_MIN}
+                      max={PRICE_MAX}
+                      step={1}
+                      value={[price[0]]}
+                      onValueChange={(v) => setPrice([Math.min(v[0], price[1]), price[1]])}
+                    />
+                    <span className="text-xs font-body text-muted-foreground">€{price[0]}</span>
+                  </div>
+                  <div>
+                    <Label className="font-body text-xs text-muted-foreground mb-1 block">Max Price</Label>
+                    <Slider
+                      min={PRICE_MIN}
+                      max={PRICE_MAX}
+                      step={1}
+                      value={[price[1]]}
+                      onValueChange={(v) => setPrice([price[0], Math.max(v[0], price[0])])}
+                    />
+                    <span className="text-xs font-body text-muted-foreground">€{price[1]}</span>
+                  </div>
                 </div>
               </div>
 
@@ -289,7 +301,7 @@ const Catalogue = () => {
                 </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                 {filtered.map((product, i) => (
                   <ProductCard key={`${product.name}-${i}`} product={product} index={i} />
                 ))}
@@ -297,32 +309,6 @@ const Catalogue = () => {
             )}
           </div>
 
-          {/* Categories sidebar */}
-          <aside>
-            <div
-              className="rounded-2xl shadow-lg p-6 lg:sticky lg:top-24"
-              style={{ backgroundColor: "#EE4C7C" }}
-            >
-              <h2 className="font-display text-2xl font-extrabold text-white mb-4">Categories</h2>
-              <ul className="flex flex-col gap-2">
-                {allCategories.map((cat) => {
-                  const active = cats.includes(cat);
-                  return (
-                    <li key={cat}>
-                      <button
-                        onClick={() => toggle(setCats)(cat)}
-                        className={`w-full text-left px-4 py-2.5 rounded-xl font-body font-semibold text-sm transition-colors duration-150 ${
-                          active ? "bg-white text-[#EE4C7C]" : "bg-white/15 hover:bg-white/30 text-white"
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </aside>
         </div>
       </main>
 
