@@ -301,7 +301,7 @@ const Catalogue = () => {
                 </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                 {filtered.map((product, i) => (
                   <ProductCard key={`${product.name}-${i}`} product={product} index={i} />
                 ))}
