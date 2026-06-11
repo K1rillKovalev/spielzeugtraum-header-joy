@@ -195,7 +195,7 @@ const Catalogue = () => {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_280px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
           {/* Filters sidebar */}
           <aside className="space-y-5">
             <div className="bg-card rounded-2xl shadow-lg p-5">
