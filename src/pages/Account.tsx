@@ -49,6 +49,17 @@ export default function Account() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
 
+  const referralLink = `https://spielzeugtraum.de/?ref=anna-m-4821`;
+  const buttons = 24;
+  const handleCopyRef = async () => {
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      toast({ title: "Link copied!", description: "Share it with friends to earn buttons." });
+    } catch {
+      toast({ title: "Couldn't copy", variant: "destructive" });
+    }
+  };
+
   const handleProfileSave = () => {
     toast({ title: "Profile updated", description: "Your personal information has been saved." });
   };
