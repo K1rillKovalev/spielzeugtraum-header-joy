@@ -11,6 +11,7 @@ import About from "./pages/About.tsx";
 import Contact from "./pages/Contact.tsx";
 import Shipping from "./pages/Shipping.tsx";
 import Privacy from "./pages/Privacy.tsx";
+import SecurityCompliance from "./pages/SecurityCompliance.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/shipping" element={<Shipping />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/security-compliance" element={<SecurityCompliance />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminStats />} />
