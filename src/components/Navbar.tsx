@@ -10,6 +10,15 @@ const navItems = [
   { label: "Reviews", href: "#reviews" },
 ];
 
+const catalogueCategories = [
+  "Dolls",
+  "Cars",
+  "Educational Toys",
+  "Wooden Toys",
+  "Board Games",
+  "Plush",
+];
+
 const Navbar = () => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
@@ -80,7 +89,7 @@ const Navbar = () => {
                 </button>
               </li>
             ))}
-            <li>
+            <li className="relative group">
               <button
                 onClick={() => handleClick("Catalogue", "/catalogue")}
                 className={`px-3 py-1.5 rounded-full text-sm font-semibold font-body transition-all duration-200 ${
@@ -91,6 +100,23 @@ const Navbar = () => {
               >
                 Catalogue
               </button>
+              <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <ul className="min-w-[200px] bg-card rounded-2xl shadow-xl border border-border/40 py-2">
+                  {catalogueCategories.map((cat) => (
+                    <li key={cat}>
+                      <button
+                        onClick={() => {
+                          setActive("Catalogue");
+                          navigate(`/catalogue?category=${encodeURIComponent(cat)}`);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm font-body text-card-foreground hover:bg-cta/10 hover:text-cta transition-colors"
+                      >
+                        {cat}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </li>
             <li>
               <button

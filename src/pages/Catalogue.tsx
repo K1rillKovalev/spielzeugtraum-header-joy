@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Search, ShoppingCart, SlidersHorizontal, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -130,8 +131,16 @@ const CheckboxList = ({
 
 const Catalogue = () => {
   const [search, setSearch] = useState("");
+  const [searchParams] = useSearchParams();
   const [price, setPrice] = useState<[number, number]>([PRICE_MIN, PRICE_MAX]);
   const [cats, setCats] = useState<string[]>([]);
+
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat && allCategories.includes(cat)) {
+      setCats((prev) => (prev.includes(cat) ? prev : [cat]));
+    }
+  }, [searchParams]);
   const [brands, setBrands] = useState<string[]>([]);
   const [avail, setAvail] = useState<string[]>([]);
   const [ages, setAges] = useState<string[]>([]);

@@ -15,16 +15,6 @@ const linkColumns: { title: string; links: { label: string; href: string }[] }[]
     ],
   },
   {
-    title: "Categories",
-    links: [
-      { label: "Dolls", href: "#" },
-      { label: "Cars", href: "#" },
-      { label: "Educational Toys", href: "#" },
-      { label: "Wooden Toys", href: "#" },
-      { label: "Board Games", href: "#" },
-    ],
-  },
-  {
     title: "Support",
     links: [
       { label: "Help", href: "#" },
