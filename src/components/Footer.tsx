@@ -17,9 +17,8 @@ const linkColumns: { title: string; links: { label: string; href: string }[] }[]
   {
     title: "Support",
     links: [
-      { label: "Help", href: "#" },
       { label: "FAQ", href: "#" },
-      { label: "Imprint", href: "#" },
+      { label: "Security & Compliance", href: "/security-compliance" },
       { label: "Terms & Conditions", href: "#" },
     ],
   },
