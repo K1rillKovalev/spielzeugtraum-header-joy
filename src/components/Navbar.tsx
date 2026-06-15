@@ -10,6 +10,15 @@ const navItems = [
   { label: "Reviews", href: "#reviews" },
 ];
 
+const catalogueCategories = [
+  "Dolls",
+  "Cars",
+  "Educational Toys",
+  "Wooden Toys",
+  "Board Games",
+  "Plush",
+];
+
 const Navbar = () => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
