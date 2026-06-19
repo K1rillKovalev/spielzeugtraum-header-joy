@@ -22,6 +22,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPwd, setShowPwd] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [verifyOpen, setVerifyOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,7 +43,7 @@ export default function SignUp() {
   };
 
   const handleConfirm = () => {
-    saveAuth({ email });
+    saveAuth({ email, rememberMe });
     setVerifyOpen(false);
     toast({ title: "Welcome to SpielzeugTraum!", description: "Your account has been created." });
     navigate("/");
