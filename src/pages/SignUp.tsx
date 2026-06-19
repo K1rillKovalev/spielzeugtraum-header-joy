@@ -122,6 +122,16 @@ export default function SignUp() {
                     />
                   </div>
                 </div>
+                <div className="flex items-center space-x-2 pt-1">
+                  <Checkbox
+                    id="remember"
+                    checked={rememberMe}
+                    onCheckedChange={(checked) => setRememberMe(checked === true)}
+                  />
+                  <Label htmlFor="remember" className="text-sm font-body cursor-pointer text-muted-foreground">
+                    Remember me
+                  </Label>
+                </div>
                 <Button type="submit" className="w-full rounded-xl bg-cta hover:bg-cta/90 text-cta-foreground font-semibold h-11">
                   Sign Up
                 </Button>
