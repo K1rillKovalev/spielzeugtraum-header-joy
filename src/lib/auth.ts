@@ -5,11 +5,14 @@ const EVENT = "auth:updated";
 
 export interface AuthUser {
   email: string;
+  rememberMe?: boolean;
 }
+
+const getStorage = (rememberMe?: boolean) => rememberMe ? localStorage : sessionStorage;
 
 export const loadAuth = (): AuthUser | null => {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(KEY) || sessionStorage.getItem(KEY);
     return raw ? (JSON.parse(raw) as AuthUser) : null;
   } catch {
     return null;
@@ -17,12 +20,17 @@ export const loadAuth = (): AuthUser | null => {
 };
 
 export const saveAuth = (user: AuthUser) => {
-  localStorage.setItem(KEY, JSON.stringify(user));
+  const storage = getStorage(user.rememberMe);
+  // clear from both to avoid duplicates
+  localStorage.removeItem(KEY);
+  sessionStorage.removeItem(KEY);
+  storage.setItem(KEY, JSON.stringify(user));
   window.dispatchEvent(new Event(EVENT));
 };
 
 export const clearAuth = () => {
   localStorage.removeItem(KEY);
+  sessionStorage.removeItem(KEY);
   window.dispatchEvent(new Event(EVENT));
 };
 
