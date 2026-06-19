@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
@@ -21,6 +22,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPwd, setShowPwd] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [verifyOpen, setVerifyOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -41,7 +43,7 @@ export default function SignUp() {
   };
 
   const handleConfirm = () => {
-    saveAuth({ email });
+    saveAuth({ email, rememberMe });
     setVerifyOpen(false);
     toast({ title: "Welcome to SpielzeugTraum!", description: "Your account has been created." });
     navigate("/");
@@ -119,6 +121,16 @@ export default function SignUp() {
                       required
                     />
                   </div>
+                </div>
+                <div className="flex items-center space-x-2 pt-1">
+                  <Checkbox
+                    id="remember"
+                    checked={rememberMe}
+                    onCheckedChange={(checked) => setRememberMe(checked === true)}
+                  />
+                  <Label htmlFor="remember" className="text-sm font-body cursor-pointer text-muted-foreground">
+                    Remember me
+                  </Label>
                 </div>
                 <Button type="submit" className="w-full rounded-xl bg-cta hover:bg-cta/90 text-cta-foreground font-semibold h-11">
                   Sign Up
