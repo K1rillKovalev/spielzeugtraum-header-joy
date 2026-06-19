@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShoppingCart, Menu, X, Truck, User } from "lucide-react";
+import { ShoppingCart, Menu, X, Truck, User, UserPlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/lib/auth";
 
 const navItems = [
   { label: "Home", href: "#home" },
@@ -21,6 +22,7 @@ const catalogueCategories = [
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const authUser = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("Home");
@@ -134,14 +136,25 @@ const Navbar = () => {
 
           {/* Right icons */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate("/account")}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold font-body text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20 transition-all duration-200"
-              aria-label="My Account"
-            >
-              <User size={18} />
-              <span className="hidden sm:inline">My Account</span>
-            </button>
+            {authUser ? (
+              <button
+                onClick={() => navigate("/account")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold font-body text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20 transition-all duration-200"
+                aria-label="My Account"
+              >
+                <User size={18} />
+                <span className="hidden sm:inline">My Account</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/signup")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold font-body text-cta hover:text-cta/80 hover:bg-card/20 transition-all duration-200"
+                aria-label="Sign Up"
+              >
+                <UserPlus size={18} />
+                <span className="hidden sm:inline">Sign Up</span>
+              </button>
+            )}
             <button
               onClick={() => navigate("/cart")}
               className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold font-body text-foreground/80 hover:text-[hsl(var(--nav-hover))] hover:bg-card/20 transition-all duration-200"
