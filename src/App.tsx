@@ -7,6 +7,7 @@ import Index from "./pages/Index.tsx";
 import Catalogue from "./pages/Catalogue.tsx";
 import Cart from "./pages/Cart.tsx";
 import Account from "./pages/Account.tsx";
+import SignUp from "./pages/SignUp.tsx";
 import About from "./pages/About.tsx";
 import Contact from "./pages/Contact.tsx";
 import Shipping from "./pages/Shipping.tsx";
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/catalogue" element={<Catalogue />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/shipping" element={<Shipping />} />
