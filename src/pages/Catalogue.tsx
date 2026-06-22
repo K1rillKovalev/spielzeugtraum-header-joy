@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { Search, ShoppingCart, SlidersHorizontal, X } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,39 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
-import productCar from "@/assets/product-car.jpg";
-import productDoll from "@/assets/product-doll.jpg";
-import productPuzzle from "@/assets/product-puzzle.jpg";
-import productTeddy from "@/assets/product-teddy.jpg";
-import productBlocks from "@/assets/product-blocks.jpg";
-import productTrain from "@/assets/product-train.jpg";
-
-type AgeGroup = "0-3" | "4-7" | "8+";
-
-interface Product {
-  name: string;
-  price: number;
-  oldPrice: number | null;
-  stock: number;
-  image: string;
-  badge: string;
-  category: string;
-  brand: string;
-  age: AgeGroup;
-}
-
-const products: Product[] = [
-  { name: "Turbo Race Car", price: 19.99, oldPrice: 24.99, stock: 24, image: productCar, badge: "Top Deal", category: "Cars", brand: "SpeedyToys", age: "4-7" },
-  { name: "Rag Doll Lina", price: 24.99, oldPrice: null, stock: 12, image: productDoll, badge: "Bestseller", category: "Dolls", brand: "DreamPlay", age: "4-7" },
-  { name: "Animal Puzzle Set", price: 14.99, oldPrice: 18.99, stock: 37, image: productPuzzle, badge: "In Stock", category: "Educational Toys", brand: "LearnFun", age: "4-7" },
-  { name: "Teddy Bear Bruno", price: 29.99, oldPrice: null, stock: 8, image: productTeddy, badge: "In Stock", category: "Plush", brand: "CuddleCo", age: "0-3" },
-  { name: "Colorful Building Blocks", price: 22.99, oldPrice: 27.99, stock: 41, image: productBlocks, badge: "Top Deal", category: "Educational Toys", brand: "BrickWorld", age: "0-3" },
-  { name: "Wooden Train", price: 34.99, oldPrice: 39.99, stock: 15, image: productTrain, badge: "In Stock", category: "Wooden Toys", brand: "EcoToys", age: "4-7" },
-  { name: "Mini Sports Car", price: 16.99, oldPrice: null, stock: 22, image: productCar, badge: "In Stock", category: "Cars", brand: "SpeedyToys", age: "8+" },
-  { name: "Princess Doll Mia", price: 27.99, oldPrice: 32.99, stock: 0, image: productDoll, badge: "Bestseller", category: "Dolls", brand: "DreamPlay", age: "4-7" },
-  { name: "Learning Puzzle Pro", price: 19.99, oldPrice: null, stock: 30, image: productPuzzle, badge: "In Stock", category: "Board Games", brand: "LearnFun", age: "8+" },
-];
+import { products, type Product, type AgeGroup } from "@/lib/products";
 
 const allCategories = ["Dolls", "Cars", "Educational Toys", "Wooden Toys", "Board Games", "Plush"];
 const allBrands = ["SpeedyToys", "DreamPlay", "LearnFun", "CuddleCo", "BrickWorld", "EcoToys"];
@@ -63,55 +31,47 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
 
   return (
     <motion.div
-      className="group bg-card rounded-2xl shadow-lg overflow-hidden border border-border/50 hover:shadow-2xl transition-shadow duration-300"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.05, duration: 0.4 }}
     >
-      <div className="relative overflow-hidden bg-muted/30">
-        <img
-          src={product.image}
-          alt={product.name}
-          className={`w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-500 ${outOfStock ? "opacity-60" : ""}`}
-          loading="lazy"
-          width={600}
-          height={600}
-        />
-        <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold font-body ${badgeColor}`}>
-          {product.badge}
-        </span>
-        {outOfStock && (
-          <span className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold font-body bg-foreground/80 text-background">
-            Out of Stock
+      <Link
+        to={`/product/${product.slug}`}
+        className="group block bg-card rounded-2xl shadow-lg overflow-hidden border border-border/50 hover:shadow-2xl transition-shadow duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cta"
+      >
+        <div className="relative overflow-hidden bg-muted/30">
+          <img
+            src={product.image}
+            alt={product.name}
+            className={`w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-500 ${outOfStock ? "opacity-60" : ""}`}
+            loading="lazy"
+            width={600}
+            height={600}
+          />
+          <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold font-body ${badgeColor}`}>
+            {product.badge}
           </span>
-        )}
-        {!outOfStock && (
-          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300 flex items-center justify-center">
-            <Button
-              variant="cta"
-              size="sm"
-              className="opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300"
-            >
-              <ShoppingCart size={16} />
-              Add to Cart
-            </Button>
-          </div>
-        )}
-      </div>
-
-      <div className="p-4">
-        <h3 className="font-display text-base font-bold text-foreground mb-1 truncate">{product.name}</h3>
-        <p className="font-body text-xs text-muted-foreground mb-2">
-          {product.brand} · Age {product.age}
-        </p>
-        <div className="flex items-center gap-2">
-          <span className="font-display text-lg font-extrabold text-cta">€{product.price.toFixed(2)}</span>
-          {product.oldPrice && (
-            <span className="font-body text-sm text-muted-foreground line-through">€{product.oldPrice.toFixed(2)}</span>
+          {outOfStock && (
+            <span className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold font-body bg-foreground/80 text-background">
+              Out of Stock
+            </span>
           )}
         </div>
-      </div>
+
+        <div className="p-4">
+          <h3 className="font-display text-base font-bold text-foreground mb-1 truncate">{product.name}</h3>
+          <p className="font-body text-xs text-muted-foreground mb-2">
+            {product.brand} · Age {product.age}
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="font-display text-lg font-extrabold text-cta">€{product.price.toFixed(2)}</span>
+            {product.oldPrice && (
+              <span className="font-body text-sm text-muted-foreground line-through">€{product.oldPrice.toFixed(2)}</span>
+            )}
+          </div>
+        </div>
+      </Link>
     </motion.div>
   );
 };
