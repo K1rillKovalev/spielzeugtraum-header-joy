@@ -86,10 +86,58 @@ export default function AdminCatalogue() {
         </Button>
       </div>
 
-      <div className="relative max-w-sm">
-        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Search products..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+      <div className="flex items-center gap-2">
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Search products..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="gap-2 shrink-0">
+              <SlidersHorizontal className="h-4 w-4" /> Filter
+              {activeFilters > 0 && (
+                <span className="ml-1 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-accent text-accent-foreground text-xs font-bold">
+                  {activeFilters}
+                </span>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56 bg-popover">
+            <DropdownMenuLabel>Category</DropdownMenuLabel>
+            <DropdownMenuRadioGroup value={catFilter} onValueChange={setCatFilter}>
+              <DropdownMenuRadioItem value="all">All categories</DropdownMenuRadioItem>
+              {categories.map((c) => (
+                <DropdownMenuRadioItem key={c} value={c}>{c}</DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Stock</DropdownMenuLabel>
+            <DropdownMenuCheckboxItem checked={lowStock} onCheckedChange={(v) => setLowStock(!!v)}>
+              Under 25 in stock
+            </DropdownMenuCheckboxItem>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Price</DropdownMenuLabel>
+            <DropdownMenuRadioGroup value={priceSort} onValueChange={setPriceSort}>
+              <DropdownMenuRadioItem value="none">Default order</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="desc">Most expensive first</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="asc">Least expensive first</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+
+            {activeFilters > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={clearFilters} className="text-destructive">
+                  <X className="h-3.5 w-3.5 mr-2" /> Clear filters
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
 
       <Card className="border-none shadow-md">
         <CardContent className="p-0">
