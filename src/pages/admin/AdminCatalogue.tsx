@@ -45,6 +45,7 @@ export default function AdminCatalogue() {
   const [catFilter, setCatFilter] = useState("all");
   const [lowStock, setLowStock] = useState(false);
   const [priceSort, setPriceSort] = useState("none");
+  const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true, price: true });
   const { toast } = useToast();
 
   const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0) + (priceSort !== "none" ? 1 : 0);
