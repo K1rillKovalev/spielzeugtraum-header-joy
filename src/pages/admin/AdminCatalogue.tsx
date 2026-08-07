@@ -42,9 +42,22 @@ export default function AdminCatalogue() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<P | null>(null);
   const [form, setForm] = useState(empty);
+  const [catFilter, setCatFilter] = useState("all");
+  const [lowStock, setLowStock] = useState(false);
+  const [priceSort, setPriceSort] = useState("none");
   const { toast } = useToast();
 
-  const filtered = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+  const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0) + (priceSort !== "none" ? 1 : 0);
+  const clearFilters = () => { setCatFilter("all"); setLowStock(false); setPriceSort("none"); };
+
+  const filtered = products
+    .filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
+    .filter((p) => (catFilter === "all" ? true : p.category === catFilter))
+    .filter((p) => (lowStock ? p.stock < 25 : true))
+    .sort((a, b) =>
+      priceSort === "desc" ? b.price - a.price : priceSort === "asc" ? a.price - b.price : 0
+    );
+
 
   const openCreate = () => { setEditing(null); setForm(empty); setOpen(true); };
   const openEdit = (p: P) => { setEditing(p); const { id, ...rest } = p; setForm(rest); setOpen(true); };
