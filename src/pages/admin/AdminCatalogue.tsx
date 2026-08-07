@@ -105,27 +105,51 @@ export default function AdminCatalogue() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-80 max-w-[calc(100vw-2rem)] bg-popover">
-            <DropdownMenuLabel>Category</DropdownMenuLabel>
-            <DropdownMenuRadioGroup value={catFilter} onValueChange={setCatFilter}>
-              <DropdownMenuRadioItem value="all">All categories</DropdownMenuRadioItem>
-              {categories.map((c) => (
-                <DropdownMenuRadioItem key={c} value={c}>{c}</DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
+            <DropdownMenuLabel
+              className="flex cursor-pointer items-center justify-between px-2 py-2"
+              onClick={() => setExpandedFilter((state) => ({ ...state, category: !state.category }))}
+            >
+              Category
+              <ChevronDown className={`h-4 w-4 transition-transform ${expandedFilter.category ? "rotate-180" : ""}`} />
+            </DropdownMenuLabel>
+            {expandedFilter.category && (
+              <DropdownMenuRadioGroup value={catFilter} onValueChange={setCatFilter}>
+                <DropdownMenuRadioItem value="all">All categories</DropdownMenuRadioItem>
+                {categories.map((c) => (
+                  <DropdownMenuRadioItem key={c} value={c}>{c}</DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            )}
 
             <DropdownMenuSeparator />
-            <DropdownMenuLabel>Stock</DropdownMenuLabel>
-            <DropdownMenuCheckboxItem checked={lowStock} onCheckedChange={(v) => setLowStock(!!v)}>
-              Under 25 in stock
-            </DropdownMenuCheckboxItem>
+            <DropdownMenuLabel
+              className="flex cursor-pointer items-center justify-between px-2 py-2"
+              onClick={() => setExpandedFilter((state) => ({ ...state, stock: !state.stock }))}
+            >
+              Stock
+              <ChevronDown className={`h-4 w-4 transition-transform ${expandedFilter.stock ? "rotate-180" : ""}`} />
+            </DropdownMenuLabel>
+            {expandedFilter.stock && (
+              <DropdownMenuCheckboxItem checked={lowStock} onCheckedChange={(v) => setLowStock(!!v)}>
+                Under 25 in stock
+              </DropdownMenuCheckboxItem>
+            )}
 
             <DropdownMenuSeparator />
-            <DropdownMenuLabel>Price</DropdownMenuLabel>
-            <DropdownMenuRadioGroup value={priceSort} onValueChange={setPriceSort}>
-              <DropdownMenuRadioItem value="none">Default order</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="desc">Most expensive first</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="asc">Least expensive first</DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
+            <DropdownMenuLabel
+              className="flex cursor-pointer items-center justify-between px-2 py-2"
+              onClick={() => setExpandedFilter((state) => ({ ...state, price: !state.price }))}
+            >
+              Price
+              <ChevronDown className={`h-4 w-4 transition-transform ${expandedFilter.price ? "rotate-180" : ""}`} />
+            </DropdownMenuLabel>
+            {expandedFilter.price && (
+              <DropdownMenuRadioGroup value={priceSort} onValueChange={setPriceSort}>
+                <DropdownMenuRadioItem value="none">Default order</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="desc">Most expensive first</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="asc">Least expensive first</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            )}
 
             {activeFilters > 0 && (
               <>
