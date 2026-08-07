@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus, Edit, Trash2 } from "lucide-react";
+import { Search, Plus, Edit, Trash2, SlidersHorizontal, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,13 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuRadioGroup, DropdownMenuRadioItem,
+  DropdownMenuCheckboxItem, DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+
 
 interface P {
   id: number; name: string; category: string; price: number; stock: number;
@@ -36,9 +42,22 @@ export default function AdminCatalogue() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<P | null>(null);
   const [form, setForm] = useState(empty);
+  const [catFilter, setCatFilter] = useState("all");
+  const [lowStock, setLowStock] = useState(false);
+  const [priceSort, setPriceSort] = useState("none");
   const { toast } = useToast();
 
-  const filtered = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+  const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0) + (priceSort !== "none" ? 1 : 0);
+  const clearFilters = () => { setCatFilter("all"); setLowStock(false); setPriceSort("none"); };
+
+  const filtered = products
+    .filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
+    .filter((p) => (catFilter === "all" ? true : p.category === catFilter))
+    .filter((p) => (lowStock ? p.stock < 25 : true))
+    .sort((a, b) =>
+      priceSort === "desc" ? b.price - a.price : priceSort === "asc" ? a.price - b.price : 0
+    );
+
 
   const openCreate = () => { setEditing(null); setForm(empty); setOpen(true); };
   const openEdit = (p: P) => { setEditing(p); const { id, ...rest } = p; setForm(rest); setOpen(true); };
@@ -67,10 +86,58 @@ export default function AdminCatalogue() {
         </Button>
       </div>
 
-      <div className="relative max-w-sm">
-        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Search products..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+      <div className="flex items-center gap-2">
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Search products..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="gap-2 shrink-0">
+              <SlidersHorizontal className="h-4 w-4" /> Filter
+              {activeFilters > 0 && (
+                <span className="ml-1 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-accent text-accent-foreground text-xs font-bold">
+                  {activeFilters}
+                </span>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56 bg-popover">
+            <DropdownMenuLabel>Category</DropdownMenuLabel>
+            <DropdownMenuRadioGroup value={catFilter} onValueChange={setCatFilter}>
+              <DropdownMenuRadioItem value="all">All categories</DropdownMenuRadioItem>
+              {categories.map((c) => (
+                <DropdownMenuRadioItem key={c} value={c}>{c}</DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Stock</DropdownMenuLabel>
+            <DropdownMenuCheckboxItem checked={lowStock} onCheckedChange={(v) => setLowStock(!!v)}>
+              Under 25 in stock
+            </DropdownMenuCheckboxItem>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Price</DropdownMenuLabel>
+            <DropdownMenuRadioGroup value={priceSort} onValueChange={setPriceSort}>
+              <DropdownMenuRadioItem value="none">Default order</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="desc">Most expensive first</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="asc">Least expensive first</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+
+            {activeFilters > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={clearFilters} className="text-destructive">
+                  <X className="h-3.5 w-3.5 mr-2" /> Clear filters
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
 
       <Card className="border-none shadow-md">
         <CardContent className="p-0">
