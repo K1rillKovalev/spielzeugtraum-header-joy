@@ -103,7 +103,7 @@ export default function AdminCatalogue() {
               )}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-56 bg-popover">
+          <DropdownMenuContent align="start" className="w-80 max-w-[calc(100vw-2rem)] bg-popover">
             <DropdownMenuLabel>Category</DropdownMenuLabel>
             <DropdownMenuRadioGroup value={catFilter} onValueChange={setCatFilter}>
               <DropdownMenuRadioItem value="all">All categories</DropdownMenuRadioItem>
