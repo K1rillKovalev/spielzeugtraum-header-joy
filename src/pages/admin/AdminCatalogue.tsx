@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus, Edit, Trash2, SlidersHorizontal, X, ChevronDown } from "lucide-react";
+import { Search, Plus, Edit, Trash2, SlidersHorizontal, X, ChevronDown, ArrowUpDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,21 +44,28 @@ export default function AdminCatalogue() {
   const [form, setForm] = useState(empty);
   const [catFilter, setCatFilter] = useState("all");
   const [lowStock, setLowStock] = useState(false);
-  const [priceSort, setPriceSort] = useState("none");
-  const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true, price: true });
+  const [sort, setSort] = useState("none");
+  const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true });
   const [deleteTarget, setDeleteTarget] = useState<P | null>(null);
   const { toast } = useToast();
 
-  const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0) + (priceSort !== "none" ? 1 : 0);
-  const clearFilters = () => { setCatFilter("all"); setLowStock(false); setPriceSort("none"); };
+  const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0);
+  const clearFilters = () => { setCatFilter("all"); setLowStock(false); };
+
+  const sorters: Record<string, (a: P, b: P) => number> = {
+    "price-desc": (a, b) => b.price - a.price,
+    "price-asc": (a, b) => a.price - b.price,
+    "name-asc": (a, b) => a.name.localeCompare(b.name),
+    "name-desc": (a, b) => b.name.localeCompare(a.name),
+    "category-asc": (a, b) => a.category.localeCompare(b.category),
+    "category-desc": (a, b) => b.category.localeCompare(a.category),
+  };
 
   const filtered = products
     .filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
     .filter((p) => (catFilter === "all" ? true : p.category === catFilter))
     .filter((p) => (lowStock ? p.stock < 25 : true))
-    .sort((a, b) =>
-      priceSort === "desc" ? b.price - a.price : priceSort === "asc" ? a.price - b.price : 0
-    );
+    .sort(sorters[sort] ?? (() => 0));
 
 
   const openCreate = () => { setEditing(null); setForm(empty); setOpen(true); };
