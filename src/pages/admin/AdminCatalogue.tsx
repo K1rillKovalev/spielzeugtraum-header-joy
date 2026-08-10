@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -46,6 +46,7 @@ export default function AdminCatalogue() {
   const [lowStock, setLowStock] = useState(false);
   const [priceSort, setPriceSort] = useState("none");
   const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true, price: true });
+  const [deleteTarget, setDeleteTarget] = useState<P | null>(null);
   const { toast } = useToast();
 
   const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0) + (priceSort !== "none" ? 1 : 0);
@@ -73,9 +74,11 @@ export default function AdminCatalogue() {
     }
     setOpen(false);
   };
-  const remove = (id: number) => {
-    setProducts((ps) => ps.filter((p) => p.id !== id));
+  const confirmRemove = () => {
+    if (!deleteTarget) return;
+    setProducts((ps) => ps.filter((p) => p.id !== deleteTarget.id));
     toast({ title: "Listing removed" });
+    setDeleteTarget(null);
   };
 
   return (
@@ -188,7 +191,7 @@ export default function AdminCatalogue() {
                     <td className="p-3"><span className={p.stock < 30 ? "text-destructive font-medium" : ""}>{p.stock}</span></td>
                     <td className="p-3 flex gap-1">
                       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(p)}><Edit className="h-3.5 w-3.5" /></Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => remove(p.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteTarget(p)}><Trash2 className="h-3.5 w-3.5" /></Button>
                     </td>
                   </tr>
                 ))}
@@ -220,6 +223,21 @@ export default function AdminCatalogue() {
           </div>
           <DialogFooter>
             <Button onClick={save} className="bg-accent hover:bg-accent/90 text-accent-foreground">Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={deleteTarget !== null} onOpenChange={(isOpen) => { if (!isOpen) setDeleteTarget(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete listing?</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to completely delete “{deleteTarget?.name}”? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmRemove}>OK</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
