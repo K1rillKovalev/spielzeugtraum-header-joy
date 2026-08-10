@@ -46,6 +46,7 @@ export default function AdminCatalogue() {
   const [lowStock, setLowStock] = useState(false);
   const [priceSort, setPriceSort] = useState("none");
   const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true, price: true });
+  const [deleteTarget, setDeleteTarget] = useState<P | null>(null);
   const { toast } = useToast();
 
   const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0) + (priceSort !== "none" ? 1 : 0);
@@ -73,9 +74,11 @@ export default function AdminCatalogue() {
     }
     setOpen(false);
   };
-  const remove = (id: number) => {
-    setProducts((ps) => ps.filter((p) => p.id !== id));
+  const confirmRemove = () => {
+    if (!deleteTarget) return;
+    setProducts((ps) => ps.filter((p) => p.id !== deleteTarget.id));
     toast({ title: "Listing removed" });
+    setDeleteTarget(null);
   };
 
   return (
