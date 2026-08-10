@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus, Edit, Trash2, SlidersHorizontal, X, ChevronDown } from "lucide-react";
+import { Search, Plus, Edit, Trash2, SlidersHorizontal, X, ChevronDown, ArrowUpDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,21 +44,28 @@ export default function AdminCatalogue() {
   const [form, setForm] = useState(empty);
   const [catFilter, setCatFilter] = useState("all");
   const [lowStock, setLowStock] = useState(false);
-  const [priceSort, setPriceSort] = useState("none");
-  const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true, price: true });
+  const [sort, setSort] = useState("none");
+  const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true });
   const [deleteTarget, setDeleteTarget] = useState<P | null>(null);
   const { toast } = useToast();
 
-  const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0) + (priceSort !== "none" ? 1 : 0);
-  const clearFilters = () => { setCatFilter("all"); setLowStock(false); setPriceSort("none"); };
+  const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0);
+  const clearFilters = () => { setCatFilter("all"); setLowStock(false); };
+
+  const sorters: Record<string, (a: P, b: P) => number> = {
+    "price-desc": (a, b) => b.price - a.price,
+    "price-asc": (a, b) => a.price - b.price,
+    "name-asc": (a, b) => a.name.localeCompare(b.name),
+    "name-desc": (a, b) => b.name.localeCompare(a.name),
+    "category-asc": (a, b) => a.category.localeCompare(b.category),
+    "category-desc": (a, b) => b.category.localeCompare(a.category),
+  };
 
   const filtered = products
     .filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
     .filter((p) => (catFilter === "all" ? true : p.category === catFilter))
     .filter((p) => (lowStock ? p.stock < 25 : true))
-    .sort((a, b) =>
-      priceSort === "desc" ? b.price - a.price : priceSort === "asc" ? a.price - b.price : 0
-    );
+    .sort(sorters[sort] ?? (() => 0));
 
 
   const openCreate = () => { setEditing(null); setForm(empty); setOpen(true); };
@@ -138,22 +145,6 @@ export default function AdminCatalogue() {
               </DropdownMenuCheckboxItem>
             )}
 
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel
-              className="flex cursor-pointer items-center justify-between px-2 py-2"
-              onClick={() => setExpandedFilter((state) => ({ ...state, price: !state.price }))}
-            >
-              Price
-              <ChevronDown className={`h-4 w-4 transition-transform ${expandedFilter.price ? "rotate-180" : ""}`} />
-            </DropdownMenuLabel>
-            {expandedFilter.price && (
-              <DropdownMenuRadioGroup value={priceSort} onValueChange={setPriceSort}>
-                <DropdownMenuRadioItem value="none">Default order</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="desc">Most expensive first</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="asc">Least expensive first</DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            )}
-
             {activeFilters > 0 && (
               <>
                 <DropdownMenuSeparator />
@@ -164,7 +155,37 @@ export default function AdminCatalogue() {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="gap-2 shrink-0">
+              <ArrowUpDown className="h-4 w-4" /> Sort
+              {sort !== "none" && (
+                <span className="ml-1 h-2 w-2 rounded-full bg-accent" />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-72 max-w-[calc(100vw-2rem)] bg-popover">
+            <DropdownMenuRadioGroup value={sort} onValueChange={setSort}>
+              <DropdownMenuLabel>Default</DropdownMenuLabel>
+              <DropdownMenuRadioItem value="none">Default order</DropdownMenuRadioItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Price</DropdownMenuLabel>
+              <DropdownMenuRadioItem value="price-desc">Most expensive first</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="price-asc">Least expensive first</DropdownMenuRadioItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Name</DropdownMenuLabel>
+              <DropdownMenuRadioItem value="name-asc">Name A – Z</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="name-desc">Name Z – A</DropdownMenuRadioItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Category</DropdownMenuLabel>
+              <DropdownMenuRadioItem value="category-asc">Category A – Z</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="category-desc">Category Z – A</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
 
 
       <Card className="border-none shadow-md">
