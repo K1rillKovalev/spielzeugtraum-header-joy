@@ -145,22 +145,6 @@ export default function AdminCatalogue() {
               </DropdownMenuCheckboxItem>
             )}
 
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel
-              className="flex cursor-pointer items-center justify-between px-2 py-2"
-              onClick={() => setExpandedFilter((state) => ({ ...state, price: !state.price }))}
-            >
-              Price
-              <ChevronDown className={`h-4 w-4 transition-transform ${expandedFilter.price ? "rotate-180" : ""}`} />
-            </DropdownMenuLabel>
-            {expandedFilter.price && (
-              <DropdownMenuRadioGroup value={priceSort} onValueChange={setPriceSort}>
-                <DropdownMenuRadioItem value="none">Default order</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="desc">Most expensive first</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="asc">Least expensive first</DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            )}
-
             {activeFilters > 0 && (
               <>
                 <DropdownMenuSeparator />
@@ -171,7 +155,37 @@ export default function AdminCatalogue() {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="gap-2 shrink-0">
+              <ArrowUpDown className="h-4 w-4" /> Sort
+              {sort !== "none" && (
+                <span className="ml-1 h-2 w-2 rounded-full bg-accent" />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-72 max-w-[calc(100vw-2rem)] bg-popover">
+            <DropdownMenuRadioGroup value={sort} onValueChange={setSort}>
+              <DropdownMenuLabel>Default</DropdownMenuLabel>
+              <DropdownMenuRadioItem value="none">Default order</DropdownMenuRadioItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Price</DropdownMenuLabel>
+              <DropdownMenuRadioItem value="price-desc">Most expensive first</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="price-asc">Least expensive first</DropdownMenuRadioItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Name</DropdownMenuLabel>
+              <DropdownMenuRadioItem value="name-asc">Name A – Z</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="name-desc">Name Z – A</DropdownMenuRadioItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Category</DropdownMenuLabel>
+              <DropdownMenuRadioItem value="category-asc">Category A – Z</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="category-desc">Category Z – A</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
 
 
       <Card className="border-none shadow-md">
