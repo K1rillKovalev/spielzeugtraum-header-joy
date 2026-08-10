@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter,
 } from "@/components/ui/dialog";
@@ -14,7 +15,7 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuRadioGroup, DropdownMenuRadioItem,
-  DropdownMenuCheckboxItem, DropdownMenuItem,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 
@@ -34,6 +35,7 @@ const initial: P[] = [
 ];
 
 const categories = ["Dolls", "Cars", "Educational", "Wooden Toys", "Board Games", "Plush"];
+const STOCK_MAX = 200;
 const empty: Omit<P, "id"> = { name: "", category: categories[0], price: 0, stock: 0, description: "", specs: "" };
 
 export default function AdminCatalogue() {
@@ -43,14 +45,15 @@ export default function AdminCatalogue() {
   const [editing, setEditing] = useState<P | null>(null);
   const [form, setForm] = useState(empty);
   const [catFilter, setCatFilter] = useState("all");
-  const [lowStock, setLowStock] = useState(false);
+  const [stockRange, setStockRange] = useState<[number, number]>([0, STOCK_MAX]);
   const [sort, setSort] = useState("none");
   const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true });
   const [deleteTarget, setDeleteTarget] = useState<P | null>(null);
   const { toast } = useToast();
 
-  const activeFilters = (catFilter !== "all" ? 1 : 0) + (lowStock ? 1 : 0);
-  const clearFilters = () => { setCatFilter("all"); setLowStock(false); };
+  const hasStockFilter = stockRange[0] > 0 || stockRange[1] < STOCK_MAX;
+  const activeFilters = (catFilter !== "all" ? 1 : 0) + (hasStockFilter ? 1 : 0);
+  const clearFilters = () => { setCatFilter("all"); setStockRange([0, STOCK_MAX]); };
 
   const sorters: Record<string, (a: P, b: P) => number> = {
     "price-desc": (a, b) => b.price - a.price,
@@ -64,7 +67,7 @@ export default function AdminCatalogue() {
   const filtered = products
     .filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
     .filter((p) => (catFilter === "all" ? true : p.category === catFilter))
-    .filter((p) => (lowStock ? p.stock < 25 : true))
+    .filter((p) => p.stock >= stockRange[0] && p.stock <= stockRange[1])
     .sort(sorters[sort] ?? (() => 0));
 
 
@@ -140,9 +143,24 @@ export default function AdminCatalogue() {
               <ChevronDown className={`h-4 w-4 transition-transform ${expandedFilter.stock ? "rotate-180" : ""}`} />
             </DropdownMenuLabel>
             {expandedFilter.stock && (
-              <DropdownMenuCheckboxItem checked={lowStock} onCheckedChange={(v) => setLowStock(!!v)}>
-                Under 25 in stock
-              </DropdownMenuCheckboxItem>
+              <div className="space-y-3 px-2 pb-3 pt-1">
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{stockRange[0]} items</span>
+                  <span>{stockRange[1]} items</span>
+                </div>
+                <Slider
+                  aria-label="Stock range"
+                  min={0}
+                  max={STOCK_MAX}
+                  step={1}
+                  value={stockRange}
+                  onValueChange={(value) => {
+                    const nextRange: [number, number] = [value[0] ?? 0, value[1] ?? STOCK_MAX];
+                    setStockRange(nextRange);
+                  }}
+                  className="py-1"
+                />
+              </div>
             )}
 
             {activeFilters > 0 && (
