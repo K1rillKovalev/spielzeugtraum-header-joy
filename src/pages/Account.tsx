@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, MapPin, CreditCard, Lock, Trash2, Package, Shield, Eye, EyeOff, Save, Gift, Copy, Sparkles } from "lucide-react";
+import { User, Mail, Phone, MapPin, CreditCard, Lock, Trash2, Package, Shield, Eye, EyeOff, Save, Gift, Copy, Sparkles, LogOut } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { clearAuth } from "@/lib/auth";
 
 const pastOrders = [
   { id: "#4821", date: "12/03/2026", items: 3, total: 78.5, status: "Delivered" },
@@ -48,6 +49,7 @@ export default function Account() {
   const [pwdOpen, setPwdOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   const referralLink = `https://spielzeugtraum.de/?ref=anna-m-4821`;
   const buttons = 24;
@@ -90,6 +92,13 @@ export default function Account() {
     setDeleteOpen(false);
     toast({ title: "Account deleted", description: "We're sorry to see you go." });
     setTimeout(() => navigate("/"), 800);
+  };
+
+  const handleLogout = () => {
+    clearAuth();
+    setLogoutOpen(false);
+    toast({ title: "Logged out", description: "You have been signed out of your account." });
+    setTimeout(() => navigate("/"), 600);
   };
 
   return (
@@ -369,6 +378,26 @@ export default function Account() {
                       onClick={handleDelete}
                     >
                       Permanently delete
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              <Dialog open={logoutOpen} onOpenChange={setLogoutOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="rounded-full gap-2 border-[#5D001E]/30 text-[#5D001E] hover:bg-[#5D001E]/5 hover:text-[#5D001E]">
+                    <LogOut className="w-4 h-4" /> Log out
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="rounded-3xl">
+                  <DialogHeader>
+                    <DialogTitle className="text-[#5D001E] font-display">Log out?</DialogTitle>
+                    <DialogDescription>Are you sure you want to log out?</DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button variant="outline" className="rounded-full" onClick={() => setLogoutOpen(false)}>Cancel</Button>
+                    <Button className="bg-[#EE4C7C] hover:bg-[#d8406d] text-white rounded-full" onClick={handleLogout}>
+                      Yes
                     </Button>
                   </DialogFooter>
                 </DialogContent>
