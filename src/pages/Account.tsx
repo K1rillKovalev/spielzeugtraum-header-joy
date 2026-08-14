@@ -382,6 +382,26 @@ export default function Account() {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+
+              <Dialog open={logoutOpen} onOpenChange={setLogoutOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="rounded-full gap-2 border-[#5D001E]/30 text-[#5D001E] hover:bg-[#5D001E]/5 hover:text-[#5D001E]">
+                    <LogOut className="w-4 h-4" /> Log out
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="rounded-3xl">
+                  <DialogHeader>
+                    <DialogTitle className="text-[#5D001E] font-display">Log out?</DialogTitle>
+                    <DialogDescription>Are you sure you want to log out?</DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button variant="outline" className="rounded-full" onClick={() => setLogoutOpen(false)}>Cancel</Button>
+                    <Button className="bg-[#EE4C7C] hover:bg-[#d8406d] text-white rounded-full" onClick={handleLogout}>
+                      Yes
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
 
