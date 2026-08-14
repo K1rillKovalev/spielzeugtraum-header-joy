@@ -41,11 +41,11 @@ export default function AdminLogin() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="login">Login</Label>
-              <Input id="login" autoComplete="username" value={login} onChange={(e) => setLogin(e.target.value)} placeholder="admin" />
+              <Input id="login" autoComplete="username" value={login} onChange={(e) => setLogin(e.target.value)} />
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input id="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password" />
+              <Input id="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <Checkbox checked={remember} onCheckedChange={(v) => setRemember(!!v)} />
