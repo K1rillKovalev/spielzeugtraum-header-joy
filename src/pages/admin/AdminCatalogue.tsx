@@ -25,6 +25,13 @@ interface P {
   description: string; specs: string; image?: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  parent: string | null;
+}
+
 const initial: P[] = [
   { id: 1, name: "Wooden Train Deluxe", category: "Wooden Toys", price: 34.99, stock: 48, description: "Classic wooden train set.", specs: "Beech wood, 12 pieces, age 3+" },
   { id: 2, name: "Teddy Bear Bruno", category: "Plush", price: 19.99, stock: 120, description: "Soft cuddly bear.", specs: "Cotton, 30 cm, washable" },
@@ -34,12 +41,25 @@ const initial: P[] = [
   { id: 6, name: "Mini Learning Tablet", category: "Educational", price: 44.99, stock: 22, description: "Interactive learning device.", specs: "LCD screen, batteries inc." },
 ];
 
-const categories = ["Dolls", "Cars", "Educational", "Wooden Toys", "Board Games", "Plush"];
+const initialCategories: Category[] = [
+  { id: 1, name: "Dolls", slug: "dolls", parent: null },
+  { id: 2, name: "Cars", slug: "cars", parent: null },
+  { id: 3, name: "Educational", slug: "educational", parent: null },
+  { id: 4, name: "Wooden Toys", slug: "wooden-toys", parent: null },
+  { id: 5, name: "Board Games", slug: "board-games", parent: null },
+  { id: 6, name: "Plush", slug: "plush", parent: null },
+];
+
+const ROOT_OPTION = "__root__";
 const STOCK_MAX = 200;
-const empty: Omit<P, "id"> = { name: "", category: categories[0], price: 0, stock: 0, description: "", specs: "" };
+
+const empty: Omit<P, "id"> = { name: "", category: initialCategories[0].name, price: 0, stock: 0, description: "", specs: "" };
+
+const emptyCategory: Omit<Category, "id"> = { name: "", slug: "", parent: null };
 
 export default function AdminCatalogue() {
   const [products, setProducts] = useState<P[]>(initial);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<P | null>(null);
@@ -49,6 +69,10 @@ export default function AdminCatalogue() {
   const [sort, setSort] = useState("none");
   const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true });
   const [deleteTarget, setDeleteTarget] = useState<P | null>(null);
+
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [categoryForm, setCategoryForm] = useState(emptyCategory);
+  const [categoryErrors, setCategoryErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   const hasStockFilter = stockRange[0] > 0 || stockRange[1] < STOCK_MAX;
