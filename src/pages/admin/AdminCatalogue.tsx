@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus, Edit, Trash2, SlidersHorizontal, X, ChevronDown, ArrowUpDown } from "lucide-react";
+import { Search, Plus, FolderPlus, Edit, Trash2, SlidersHorizontal, X, ChevronDown, ArrowUpDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,13 @@ interface P {
   description: string; specs: string; image?: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  parent: string | null;
+}
+
 const initial: P[] = [
   { id: 1, name: "Wooden Train Deluxe", category: "Wooden Toys", price: 34.99, stock: 48, description: "Classic wooden train set.", specs: "Beech wood, 12 pieces, age 3+" },
   { id: 2, name: "Teddy Bear Bruno", category: "Plush", price: 19.99, stock: 120, description: "Soft cuddly bear.", specs: "Cotton, 30 cm, washable" },
@@ -34,12 +41,25 @@ const initial: P[] = [
   { id: 6, name: "Mini Learning Tablet", category: "Educational", price: 44.99, stock: 22, description: "Interactive learning device.", specs: "LCD screen, batteries inc." },
 ];
 
-const categories = ["Dolls", "Cars", "Educational", "Wooden Toys", "Board Games", "Plush"];
+const initialCategories: Category[] = [
+  { id: 1, name: "Dolls", slug: "dolls", parent: null },
+  { id: 2, name: "Cars", slug: "cars", parent: null },
+  { id: 3, name: "Educational", slug: "educational", parent: null },
+  { id: 4, name: "Wooden Toys", slug: "wooden-toys", parent: null },
+  { id: 5, name: "Board Games", slug: "board-games", parent: null },
+  { id: 6, name: "Plush", slug: "plush", parent: null },
+];
+
+const ROOT_OPTION = "__root__";
 const STOCK_MAX = 200;
-const empty: Omit<P, "id"> = { name: "", category: categories[0], price: 0, stock: 0, description: "", specs: "" };
+
+const empty: Omit<P, "id"> = { name: "", category: initialCategories[0].name, price: 0, stock: 0, description: "", specs: "" };
+
+const emptyCategory: Omit<Category, "id"> = { name: "", slug: "", parent: null };
 
 export default function AdminCatalogue() {
   const [products, setProducts] = useState<P[]>(initial);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<P | null>(null);
@@ -49,6 +69,10 @@ export default function AdminCatalogue() {
   const [sort, setSort] = useState("none");
   const [expandedFilter, setExpandedFilter] = useState({ category: true, stock: true });
   const [deleteTarget, setDeleteTarget] = useState<P | null>(null);
+
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [categoryForm, setCategoryForm] = useState(emptyCategory);
+  const [categoryErrors, setCategoryErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   const hasStockFilter = stockRange[0] > 0 || stockRange[1] < STOCK_MAX;
@@ -91,13 +115,57 @@ export default function AdminCatalogue() {
     setDeleteTarget(null);
   };
 
+  const generateSlug = (name: string) =>
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9\-]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+  const validateCategory = (): boolean => {
+    const errors: Record<string, string> = {};
+    const name = categoryForm.name.trim();
+
+    if (!name) {
+      errors.name = "Category name is required";
+    } else if (name.length > 100) {
+      errors.name = "Category name must not exceed 100 symbols";
+    } else if (!/^[a-zA-Z0-9\s\-&]+$/.test(name)) {
+      errors.name = "Allowed characters: letters, numbers, spaces, hyphens, and ampersands";
+    }
+
+    const slug = categoryForm.slug.trim() || generateSlug(name);
+    if (slug && !/^[a-z0-9\-]+$/.test(slug)) {
+      errors.slug = "Slug must contain only lowercase letters, numbers, or hyphens";
+    } else if (categories.some((c) => c.slug === slug)) {
+      errors.slug = "This URL slug is already in use";
+    }
+
+    setCategoryErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const saveCategory = () => {
+    if (!validateCategory()) return;
+    const slug = categoryForm.slug.trim() || generateSlug(categoryForm.name.trim());
+    const parent = categoryForm.parent === ROOT_OPTION ? null : categoryForm.parent;
+    setCategories((prev) => [...prev, { id: Date.now(), name: categoryForm.name.trim(), slug, parent }]);
+    toast({ title: "Category created" });
+    setCategoryOpen(false);
+    setCategoryForm(emptyCategory);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-display font-bold">Catalogue Management</h1>
-        <Button onClick={openCreate} className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2">
-          <Plus className="h-4 w-4" /> New Listing
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button onClick={() => { setCategoryForm(emptyCategory); setCategoryErrors({}); setCategoryOpen(true); }} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
+            <FolderPlus className="h-4 w-4" /> New Category
+          </Button>
+          <Button onClick={openCreate} className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2">
+            <Plus className="h-4 w-4" /> New Listing
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-2">
@@ -129,7 +197,7 @@ export default function AdminCatalogue() {
               <DropdownMenuRadioGroup value={catFilter} onValueChange={setCatFilter}>
                 <DropdownMenuRadioItem value="all">All categories</DropdownMenuRadioItem>
                 {categories.map((c) => (
-                  <DropdownMenuRadioItem key={c} value={c}>{c}</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem key={c.id} value={c.name}>{c.name}</DropdownMenuRadioItem>
                 ))}
               </DropdownMenuRadioGroup>
             )}
@@ -251,7 +319,7 @@ export default function AdminCatalogue() {
               <Label>Category</Label>
               <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+              <SelectContent>{categories.map((c) => <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -262,6 +330,70 @@ export default function AdminCatalogue() {
           </div>
           <DialogFooter>
             <Button onClick={save} className="bg-accent hover:bg-accent/90 text-accent-foreground">Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={categoryOpen} onOpenChange={setCategoryOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>New Category</DialogTitle>
+            <DialogDescription>
+              Create a new product category. The URL slug is generated automatically from the category name.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+            <div className="space-y-1.5">
+              <Label htmlFor="category-name">Category name <span className="text-destructive">*</span></Label>
+              <Input
+                id="category-name"
+                value={categoryForm.name}
+                maxLength={100}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  setCategoryForm((prev) => ({
+                    ...prev,
+                    name,
+                    slug: prev.slug || generateSlug(name),
+                  }));
+                }}
+                placeholder="e.g. Outdoor Toys"
+              />
+              {categoryErrors.name && <p className="text-xs text-destructive">{categoryErrors.name}</p>}
+              <p className="text-xs text-muted-foreground">Max 100 symbols. Allowed: letters, numbers, spaces, hyphens, and ampersands.</p>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="parent-category">Parent Category</Label>
+              <Select
+                value={categoryForm.parent ?? ROOT_OPTION}
+                onValueChange={(v) => setCategoryForm((prev) => ({ ...prev, parent: v }))}
+              >
+                <SelectTrigger id="parent-category"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ROOT_OPTION}>None (Root Category)</SelectItem>
+                  {categories.map((c) => (
+                    <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="category-slug">URL Slug</Label>
+              <Input
+                id="category-slug"
+                value={categoryForm.slug}
+                onChange={(e) => setCategoryForm((prev) => ({ ...prev, slug: e.target.value }))}
+                placeholder="Auto-generated if left empty"
+              />
+              {categoryErrors.slug && <p className="text-xs text-destructive">{categoryErrors.slug}</p>}
+              <p className="text-xs text-muted-foreground">Lowercase letters, numbers, and hyphens only. Must be unique.</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCategoryOpen(false)}>Cancel</Button>
+            <Button onClick={saveCategory} className="bg-primary hover:bg-primary/90 text-primary-foreground">Create Category</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
