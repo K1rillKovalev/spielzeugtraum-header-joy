@@ -25,7 +25,7 @@ export interface Product {
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-export const products: Product[] = [
+const baseProducts: Product[] = [
   {
     slug: "turbo-race-car",
     name: "Turbo Race Car",
@@ -162,6 +162,17 @@ export const products: Product[] = [
     badge: "In Stock",
   },
 ];
+
+const COPIES = 6;
+
+export const products: Product[] = Array.from({ length: COPIES }, (_, copyIndex) =>
+  baseProducts.map((p) => ({
+    ...p,
+    slug: slugify(`${p.name} ${copyIndex + 1}`),
+    name: `${p.name} ${copyIndex + 1}`,
+    stock: Math.max(0, p.stock - copyIndex * 4),
+  }))
+).flat();
 
 export const getProductBySlug = (slug: string) =>
   products.find((p) => p.slug === slug);
