@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,7 @@ const allAvailability = ["In Stock", "Out of Stock"] as const;
 const allAges: AgeGroup[] = ["0-3", "4-7", "8+"];
 const PRICE_MIN = 0;
 const PRICE_MAX = 50;
+const ITEMS_PER_PAGE = 9;
 
 const ProductCard = ({ product, index }: { product: Product; index: number }) => {
   const badgeColor =
@@ -89,11 +90,105 @@ const CheckboxList = ({
   </div>
 );
 
+const getVisiblePages = (currentPage: number, totalPages: number): (number | string)[] => {
+  if (totalPages <= 5) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  const pages: (number | string)[] = [];
+
+  if (currentPage <= 4) {
+    for (let i = 1; i <= 5; i++) pages.push(i);
+    pages.push("...");
+    pages.push(totalPages);
+  } else if (currentPage >= totalPages - 3) {
+    pages.push(1);
+    pages.push("...");
+    for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    pages.push("...");
+    pages.push(currentPage - 1);
+    pages.push(currentPage);
+    pages.push(currentPage + 1);
+    pages.push("...");
+    pages.push(totalPages);
+  }
+
+  return pages;
+};
+
+const PaginationControls = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}) => {
+  const visiblePages = getVisiblePages(currentPage, totalPages);
+
+  return (
+    <div className="flex items-center justify-center gap-2 mt-10">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-card border border-border/50 text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        aria-label="Previous page"
+      >
+        <ChevronLeft size={18} />
+      </button>
+
+      {visiblePages.map((page, idx) => {
+        if (page === "...") {
+          return (
+            <span
+              key={`ellipsis-${idx}`}
+              className="flex items-center justify-center w-10 h-10 font-body text-muted-foreground select-none"
+            >
+              ...
+            </span>
+          );
+        }
+
+        const isCurrent = page === currentPage;
+        return (
+          <button
+            key={page}
+            onClick={() => onPageChange(page as number)}
+            disabled={isCurrent}
+            className={`flex items-center justify-center w-10 h-10 rounded-full font-body text-sm font-semibold transition-colors ${
+              isCurrent
+                ? "bg-cta/20 text-cta opacity-60 cursor-default"
+                : "bg-card border border-border/50 text-foreground hover:bg-muted"
+            }`}
+            aria-label={`Page ${page}`}
+            aria-current={isCurrent ? "page" : undefined}
+          >
+            {page}
+          </button>
+        );
+      })}
+
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-card border border-border/50 text-foreground hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        aria-label="Next page"
+      >
+        <ChevronRight size={18} />
+      </button>
+    </div>
+  );
+};
+
 const Catalogue = () => {
   const [search, setSearch] = useState("");
   const [searchParams] = useSearchParams();
   const [price, setPrice] = useState<[number, number]>([PRICE_MIN, PRICE_MAX]);
   const [cats, setCats] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const cat = searchParams.get("category");
@@ -101,6 +196,11 @@ const Catalogue = () => {
       setCats((prev) => (prev.includes(cat) ? prev : [cat]));
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, price, cats]);
+
   const [brands, setBrands] = useState<string[]>([]);
   const [avail, setAvail] = useState<string[]>([]);
   const [ages, setAges] = useState<string[]>([]);
@@ -124,11 +224,25 @@ const Catalogue = () => {
     });
   }, [search, price, cats, brands, ages, avail]);
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const paginated = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filtered.slice(start, start + ITEMS_PER_PAGE);
+  }, [filtered, currentPage]);
+
   const activeExtraCount = brands.length + avail.length + ages.length;
 
   const clearAll = () => {
     setPrice([PRICE_MIN, PRICE_MAX]);
     setCats([]); setBrands([]); setAvail([]); setAges([]);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -270,11 +384,20 @@ const Catalogue = () => {
                 </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                {filtered.map((product, i) => (
-                  <ProductCard key={`${product.name}-${i}`} product={product} index={i} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  {paginated.map((product, i) => (
+                    <ProductCard key={`${product.name}-${i}`} product={product} index={i} />
+                  ))}
+                </div>
+                {totalPages > 1 && (
+                  <PaginationControls
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                )}
+              </>
             )}
           </div>
 
