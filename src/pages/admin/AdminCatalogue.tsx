@@ -115,6 +115,45 @@ export default function AdminCatalogue() {
     setDeleteTarget(null);
   };
 
+  const generateSlug = (name: string) =>
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9\-]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+  const validateCategory = (): boolean => {
+    const errors: Record<string, string> = {};
+    const name = categoryForm.name.trim();
+
+    if (!name) {
+      errors.name = "Category name is required";
+    } else if (name.length > 100) {
+      errors.name = "Category name must not exceed 100 symbols";
+    } else if (!/^[a-zA-Z0-9\s\-&]+$/.test(name)) {
+      errors.name = "Allowed characters: letters, numbers, spaces, hyphens, and ampersands";
+    }
+
+    const slug = categoryForm.slug.trim() || generateSlug(name);
+    if (slug && !/^[a-z0-9\-]+$/.test(slug)) {
+      errors.slug = "Slug must contain only lowercase letters, numbers, or hyphens";
+    } else if (categories.some((c) => c.slug === slug)) {
+      errors.slug = "This URL slug is already in use";
+    }
+
+    setCategoryErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const saveCategory = () => {
+    if (!validateCategory()) return;
+    const slug = categoryForm.slug.trim() || generateSlug(categoryForm.name.trim());
+    const parent = categoryForm.parent === ROOT_OPTION ? null : categoryForm.parent;
+    setCategories((prev) => [...prev, { id: Date.now(), name: categoryForm.name.trim(), slug, parent }]);
+    toast({ title: "Category created" });
+    setCategoryOpen(false);
+    setCategoryForm(emptyCategory);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
