@@ -334,6 +334,70 @@ export default function AdminCatalogue() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={categoryOpen} onOpenChange={setCategoryOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>New Category</DialogTitle>
+            <DialogDescription>
+              Create a new product category. The URL slug is generated automatically from the category name.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+            <div className="space-y-1.5">
+              <Label htmlFor="category-name">Category name <span className="text-destructive">*</span></Label>
+              <Input
+                id="category-name"
+                value={categoryForm.name}
+                maxLength={100}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  setCategoryForm((prev) => ({
+                    ...prev,
+                    name,
+                    slug: prev.slug || generateSlug(name),
+                  }));
+                }}
+                placeholder="e.g. Outdoor Toys"
+              />
+              {categoryErrors.name && <p className="text-xs text-destructive">{categoryErrors.name}</p>}
+              <p className="text-xs text-muted-foreground">Max 100 symbols. Allowed: letters, numbers, spaces, hyphens, and ampersands.</p>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="parent-category">Parent Category</Label>
+              <Select
+                value={categoryForm.parent ?? ROOT_OPTION}
+                onValueChange={(v) => setCategoryForm((prev) => ({ ...prev, parent: v }))}
+              >
+                <SelectTrigger id="parent-category"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ROOT_OPTION}>None (Root Category)</SelectItem>
+                  {categories.map((c) => (
+                    <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="category-slug">URL Slug</Label>
+              <Input
+                id="category-slug"
+                value={categoryForm.slug}
+                onChange={(e) => setCategoryForm((prev) => ({ ...prev, slug: e.target.value }))}
+                placeholder="Auto-generated if left empty"
+              />
+              {categoryErrors.slug && <p className="text-xs text-destructive">{categoryErrors.slug}</p>}
+              <p className="text-xs text-muted-foreground">Lowercase letters, numbers, and hyphens only. Must be unique.</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCategoryOpen(false)}>Cancel</Button>
+            <Button onClick={saveCategory} className="bg-primary hover:bg-primary/90 text-primary-foreground">Create Category</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={deleteTarget !== null} onOpenChange={(isOpen) => { if (!isOpen) setDeleteTarget(null); }}>
         <DialogContent className="max-w-md">
           <DialogHeader>
