@@ -153,7 +153,7 @@ export default function AdminCatalogue() {
               <DropdownMenuRadioGroup value={catFilter} onValueChange={setCatFilter}>
                 <DropdownMenuRadioItem value="all">All categories</DropdownMenuRadioItem>
                 {categories.map((c) => (
-                  <DropdownMenuRadioItem key={c} value={c}>{c}</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem key={c.id} value={c.name}>{c.name}</DropdownMenuRadioItem>
                 ))}
               </DropdownMenuRadioGroup>
             )}
